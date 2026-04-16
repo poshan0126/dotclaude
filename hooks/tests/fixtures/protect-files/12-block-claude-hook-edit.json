@@ -1,0 +1,5 @@
+{
+  "name": "block editing a hook script",
+  "stdin": { "tool_input": { "file_path": "/repo/.claude/hooks/foo.sh" } },
+  "expect_exit": 2
+}

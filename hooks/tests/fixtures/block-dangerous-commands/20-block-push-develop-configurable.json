@@ -1,0 +1,6 @@
+{
+  "name": "when PROTECTED_BRANCHES includes develop, block push to develop",
+  "stdin": { "tool_input": { "command": "git push origin develop" } },
+  "env": { "CLAUDE_PROTECTED_BRANCHES": "main,master,develop,release" },
+  "expect_exit": 2
+}

@@ -1,0 +1,5 @@
+{
+  "name": "block *.generated.ts",
+  "stdin": { "tool_input": { "file_path": "src/types.generated.ts" } },
+  "expect_exit": 2
+}

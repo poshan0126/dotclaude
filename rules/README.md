@@ -22,6 +22,16 @@ Three focused principles: test behavior not implementation, run single test file
 
 Loads when touching API or auth code. Covers input validation, parameterized queries, XSS prevention, token handling, secret logging, constant-time comparison, security headers, rate limiting.
 
+### database.md
+**Scope**: Path-scoped (migration directories — `**/migrations/**`, `**/prisma/**`, `**/alembic/**`, etc.)
+
+Loads when touching schema and migration files. Covers migration safety (reversibility, backward compatibility for one deploy cycle, NOT NULL with backfill, index creation strategy), transaction boundaries, destructive-statement guardrails, and foreign-key discipline.
+
+### error-handling.md
+**Scope**: Path-scoped (backend surfaces — handlers, controllers, services, workers)
+
+Loads when touching server code. Covers error shape consistency, never-swallow rules, retry/backoff policies, fail-open vs fail-closed semantics, timeout discipline, and the difference between expected failures (validation) and unexpected failures (bugs — propagate).
+
 ### frontend.md
 **Scope**: Path-scoped (`**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`, `**/*.css`, `**/*.scss`, `**/*.html`, `**/components/**`, `**/pages/**`, etc.)
 

@@ -1,0 +1,5 @@
+{
+  "name": "allow npm publish --dry-run",
+  "stdin": { "tool_input": { "command": "npm publish --dry-run" } },
+  "expect_exit": 0
+}

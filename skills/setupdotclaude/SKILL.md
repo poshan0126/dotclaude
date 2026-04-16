@@ -21,8 +21,11 @@ Before anything else, delete files inside `.claude/` that exist for the dotclaud
 - `.claude/agents/README.md`
 - `.claude/hooks/README.md`
 - `.claude/skills/README.md`
+- `.claude/hooks/tests/` (entire directory — dotclaude's own regression fixtures, not for user projects)
 
 Also delete `.claude/CLAUDE.md` if it exists — CLAUDE.md belongs at the project root, not inside `.claude/`.
+
+If `.github/workflows/hook-tests.yml` exists in the project root, offer to delete it — that's dotclaude's own CI for its hook fixtures, not something the user's project needs. Confirm before deleting in case the user intentionally kept it.
 
 ## Phase 1: Detect Tech Stack
 
@@ -128,7 +131,34 @@ Uncomment the section matching the detected formatter:
 
 ### 3.8 — hooks/block-dangerous-commands.sh
 
-Check the default branch name (`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null` or `git remote show origin`). If it's not `main` or `master`, update the regex pattern.
+The hook already reads `git config init.defaultBranch` at runtime and honors the `CLAUDE_PROTECTED_BRANCHES` env var (comma-separated). **Do not edit the hook's regex.**
+
+Instead:
+1. Detect the repo's default branch via `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'` (fall back to `git config init.defaultBranch`, then `main`).
+2. If the detected default is `main` or `master` → nothing to do, the hook's defaults cover it.
+3. If the team also protects branches like `develop` / `release/*` / `production`, tell the user how to extend protection. Offer two options:
+   - **Per-project** (recommended): add `"env": { "CLAUDE_PROTECTED_BRANCHES": "main,master,develop,production" }` to `.claude/settings.json` (confirm the exact list with the user first).
+   - **Per-user**: export `CLAUDE_PROTECTED_BRANCHES` in their shell profile (mention this, don't edit their shell profile).
+4. Never modify `block-dangerous-commands.sh` itself — the hook is generic and test-covered; local protection lists belong in configuration, not code.
+
+### 3.8b — hooks/auto-test.sh
+
+Open the script and check the test-runner detection block. If the project's test runner isn't covered (custom runner, non-standard command like `pnpm -F api test`, monorepo test filtering, or a Makefile target), either:
+- **Adjust the detection block** to add the detected runner, or
+- **Comment out the invocation** and leave a note — running the wrong command every Edit/Write is worse than silence.
+
+Confirm the runner command with the user before patching. If the project has no tests yet, offer to disable the hook by commenting out its entry in `settings.json` under `PostToolUse`.
+
+### 3.8c — hooks/context-recovery.sh
+
+Open the script. It has a placeholder `RULES` block near the top that re-injects non-negotiables after Claude Code context compaction. **This placeholder is not useful as-is — it must be customized per project.**
+
+Propose 3–6 non-negotiables drawn from this project's detected stack and conventions:
+- The most critical items from `CLAUDE.md` "Don'ts" or "Key Decisions"
+- Any hard invariants (e.g. "all migrations must be reversible", "payment handlers must verify Stripe signatures", "never use `any` in TypeScript")
+- Branch/PR policy if non-obvious (e.g. "default branch is `develop`, not `main`")
+
+Show the user the proposed RULES block before writing. If the user doesn't use context compaction or can't think of non-negotiables, offer to disable the hook by removing its entry from `settings.json` under `SessionStart` (with matcher `compact`).
 
 ### 3.9 — rules/database.md
 

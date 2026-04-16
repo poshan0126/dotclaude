@@ -1,0 +1,5 @@
+{
+  "name": "allow DELETE FROM with WHERE",
+  "stdin": { "tool_input": { "command": "psql -c \"DELETE FROM users WHERE id = 1\"" } },
+  "expect_exit": 0
+}

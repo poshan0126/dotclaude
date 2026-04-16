@@ -191,10 +191,18 @@ dotclaude/
     ├── protect-files.sh                #   Block edits to sensitive files and directories
     ├── warn-large-files.sh             #   Block writes to build artifacts and binary files
     ├── scan-secrets.sh                 #   Detect API keys, tokens, and credentials in file content
-    ├── block-dangerous-commands.sh     #   Block push to main, force push, reset --hard, publish, rm -rf, DROP TABLE
+    ├── block-dangerous-commands.sh     #   Block push to protected branches (configurable via CLAUDE_PROTECTED_BRANCHES), force push, rm -rf, DROP TABLE, DELETE FROM without WHERE, chmod 777, curl | sh
     ├── format-on-save.sh               #   Auto-format after edits (auto-detects Prettier, Black, Ruff, Biome, rustfmt, gofmt)
-    └── session-start.sh                #   Inject branch/commit/stash/PR context at session start
+    ├── auto-test.sh                    #   Find and run the matching test file after edits
+    ├── session-start.sh                #   Inject branch/commit/stash/PR context at session start
+    ├── context-recovery.sh             #   Re-inject critical project rules after context compaction
+    ├── notify.sh                       #   Native OS notification (macOS / Linux / WSL) when Claude needs input
+    └── tests/                          #   Fixtures + runner for regression-testing hooks
+        ├── run-all.sh                  #     Run all fixtures; exits non-zero on any failure
+        └── fixtures/<hook>/*.json      #     Declarative test cases (stdin + expected exit/stdout)
 ```
+
+CI: `.github/workflows/hook-tests.yml` runs the hook suite on Linux and macOS for every PR touching `hooks/`.
 
 ## What NOT to Put in .claude/
 

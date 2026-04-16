@@ -1,0 +1,5 @@
+{
+  "name": "block file inside .git/",
+  "stdin": { "tool_input": { "file_path": "/repo/.git/config" } },
+  "expect_exit": 2
+}

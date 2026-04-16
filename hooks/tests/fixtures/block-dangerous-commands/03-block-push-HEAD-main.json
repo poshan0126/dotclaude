@@ -1,0 +1,5 @@
+{
+  "name": "block push refspec HEAD:main",
+  "stdin": { "tool_input": { "command": "git push origin HEAD:main" } },
+  "expect_exit": 2
+}

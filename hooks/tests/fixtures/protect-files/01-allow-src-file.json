@@ -1,0 +1,5 @@
+{
+  "name": "ordinary source file allowed",
+  "stdin": { "tool_input": { "file_path": "src/index.ts" } },
+  "expect_exit": 0
+}

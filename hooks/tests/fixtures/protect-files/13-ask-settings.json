@@ -1,0 +1,6 @@
+{
+  "name": "ask when editing .claude/settings.json",
+  "stdin": { "tool_input": { "file_path": ".claude/settings.json" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["ask"]
+}

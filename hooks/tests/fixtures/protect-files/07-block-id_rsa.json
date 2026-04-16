@@ -1,0 +1,5 @@
+{
+  "name": "block id_rsa",
+  "stdin": { "tool_input": { "file_path": "/home/me/.ssh/id_rsa" } },
+  "expect_exit": 2
+}

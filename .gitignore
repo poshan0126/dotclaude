@@ -9,3 +9,7 @@ Thumbs.db
 # Editor artifacts
 *.swp
 *~
+
+# Accidental web-page saves
+hooks/*.html
+hooks/*_files/
