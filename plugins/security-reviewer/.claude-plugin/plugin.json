@@ -1,0 +1,8 @@
+{
+  "name": "security-reviewer",
+  "description": "OWASP-style review: injection, auth, data exposure, weak crypto. Severity-ranked with file:line + fix.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

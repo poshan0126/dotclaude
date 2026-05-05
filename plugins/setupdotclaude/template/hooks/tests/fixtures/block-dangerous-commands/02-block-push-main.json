@@ -1,0 +1,6 @@
+{
+  "name": "block push to origin main",
+  "stdin": { "tool_input": { "command": "git push origin main" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["deny", "main"]
+}

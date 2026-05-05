@@ -1,0 +1,8 @@
+{
+  "name": "ship",
+  "description": "Commit, push, create PR with confirmation at every step. Blocks secrets and force-push.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

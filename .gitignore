@@ -9,6 +9,7 @@ Thumbs.db
 # Editor artifacts
 *.swp
 *~
+.devswarm-temp/
 
 # Accidental web-page saves
 hooks/*.html

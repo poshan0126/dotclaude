@@ -1,0 +1,8 @@
+{
+  "name": "performance-reviewer",
+  "description": "Finds real bottlenecks. DB N+1, memory leaks, blocking calls, re-renders.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

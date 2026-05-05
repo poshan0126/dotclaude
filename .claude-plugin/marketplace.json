@@ -1,0 +1,93 @@
+{
+  "name": "dotclaude",
+  "owner": {
+    "name": "poshan0126"
+  },
+  "description": "Lean, token-efficient agents and skills for daily Claude Code development. Install the whole kit by cloning the repo, or pick individual plugins from this marketplace.",
+  "plugins": [
+    {
+      "name": "code-reviewer",
+      "source": "./plugins/code-reviewer",
+      "description": "Reviews code for real bugs: off-by-ones, null derefs, race conditions, swallowed errors. Skips style nitpicks.",
+      "license": "MIT"
+    },
+    {
+      "name": "security-reviewer",
+      "source": "./plugins/security-reviewer",
+      "description": "OWASP-style review: injection, auth, data exposure, weak crypto. Severity-ranked with file:line + fix.",
+      "license": "MIT"
+    },
+    {
+      "name": "performance-reviewer",
+      "source": "./plugins/performance-reviewer",
+      "description": "Finds real bottlenecks. DB N+1, memory leaks, blocking calls, re-renders.",
+      "license": "MIT"
+    },
+    {
+      "name": "doc-reviewer",
+      "source": "./plugins/doc-reviewer",
+      "description": "Cross-references docs against actual source. Flags drift, missing params, dead references.",
+      "license": "MIT"
+    },
+    {
+      "name": "frontend-designer",
+      "source": "./plugins/frontend-designer",
+      "description": "Builds production-grade UI. Tokens-first, anti-AI-slop aesthetics, design tokens enforced.",
+      "license": "MIT"
+    },
+    {
+      "name": "setupdotclaude",
+      "source": "./plugins/setupdotclaude",
+      "description": "Bootstrap and customize dotclaude in any project. Copies the full template into .claude/ if missing, then tunes every config file to match your stack.",
+      "license": "MIT"
+    },
+    {
+      "name": "debug-fix",
+      "source": "./plugins/debug-fix",
+      "description": "Find and fix a bug. Default is the careful path (reproduce, investigate, test). Add `--fast` for emergency hotfix mode.",
+      "license": "MIT"
+    },
+    {
+      "name": "ship",
+      "source": "./plugins/ship",
+      "description": "Commit, push, create PR with confirmation at every step. Blocks secrets and force-push.",
+      "license": "MIT"
+    },
+    {
+      "name": "pr-review",
+      "source": "./plugins/pr-review",
+      "description": "Review PR or staged changes via specialist agents. Synthesizes a unified severity-ranked report.",
+      "license": "MIT"
+    },
+    {
+      "name": "tdd",
+      "source": "./plugins/tdd",
+      "description": "Strict red-green-refactor TDD loop. Failing test, then minimum code, then refactor. Commits after each cycle.",
+      "license": "MIT"
+    },
+    {
+      "name": "explain",
+      "source": "./plugins/explain",
+      "description": "Explain code with one-sentence summary, mental model, ASCII diagram, and modification guide.",
+      "license": "MIT"
+    },
+    {
+      "name": "refactor",
+      "source": "./plugins/refactor",
+      "description": "Safely refactor with tests as a safety net. Writes tests first if none exist.",
+      "license": "MIT"
+    },
+    {
+      "name": "test-writer",
+      "source": "./plugins/test-writer",
+      "description": "Write comprehensive tests covering happy/edge/error/concurrency paths. Verifies tests actually catch bugs.",
+      "license": "MIT"
+    },
+    {
+      "name": "context-budget",
+      "source": "./plugins/context-budget",
+      "description": "Estimate per-turn token cost of your .claude/ configuration and CLAUDE.md. Always-loaded vs path-scoped vs invoked-only, with top contributors. Use --api for exact counts.",
+      "license": "MIT"
+    }
+  ]
+}
