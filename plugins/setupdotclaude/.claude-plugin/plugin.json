@@ -1,0 +1,8 @@
+{
+  "name": "setupdotclaude",
+  "description": "Bootstrap and customize dotclaude in any project. Copies the full template into .claude/ if missing, then tunes every config file to match your stack.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

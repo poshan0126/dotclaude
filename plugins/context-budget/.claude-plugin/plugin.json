@@ -1,0 +1,8 @@
+{
+  "name": "context-budget",
+  "description": "Estimate per-turn token cost of your .claude/ configuration and CLAUDE.md. Always-loaded vs path-scoped vs invoked-only, with top contributors. Use --api for exact counts via Anthropic's count_tokens endpoint.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

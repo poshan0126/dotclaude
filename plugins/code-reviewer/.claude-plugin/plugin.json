@@ -1,0 +1,8 @@
+{
+  "name": "code-reviewer",
+  "description": "Reviews code for real bugs: off-by-ones, null derefs, race conditions, swallowed errors. Skips style nitpicks.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

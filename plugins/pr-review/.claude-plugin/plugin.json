@@ -1,0 +1,8 @@
+{
+  "name": "pr-review",
+  "description": "Review PR or staged changes via specialist agents. Synthesizes a unified severity-ranked report.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

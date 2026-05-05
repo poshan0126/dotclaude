@@ -1,0 +1,8 @@
+{
+  "name": "explain",
+  "description": "Explain code with one-sentence summary, mental model, ASCII diagram, and modification guide.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}

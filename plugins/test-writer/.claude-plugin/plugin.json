@@ -1,0 +1,8 @@
+{
+  "name": "test-writer",
+  "description": "Write comprehensive tests covering happy/edge/error/concurrency paths. Verifies tests actually catch bugs.",
+  "author": { "name": "poshan0126" },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude"
+}
