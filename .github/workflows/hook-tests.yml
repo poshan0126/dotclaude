@@ -1,0 +1,29 @@
+name: hook-tests
+
+on:
+  pull_request:
+    paths:
+      - 'hooks/**'
+      - '.github/workflows/hook-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'hooks/**'
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install jq (macOS)
+        if: runner.os == 'macOS'
+        run: brew install jq || true
+      - name: Install jq (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -y && sudo apt-get install -y jq
+      - name: Run hook fixtures
+        run: bash hooks/tests/run-all.sh

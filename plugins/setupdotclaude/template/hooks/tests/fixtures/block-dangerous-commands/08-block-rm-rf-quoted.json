@@ -1,0 +1,5 @@
+{
+  "name": "block rm -rf with quoted home path",
+  "stdin": { "tool_input": { "command": "rm -rf \"$HOME/Projects\"" } },
+  "expect_exit": 2
+}

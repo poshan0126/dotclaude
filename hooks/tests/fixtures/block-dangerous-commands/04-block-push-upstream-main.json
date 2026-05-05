@@ -1,0 +1,5 @@
+{
+  "name": "block push to upstream main (not just origin)",
+  "stdin": { "tool_input": { "command": "git push upstream main" } },
+  "expect_exit": 2
+}

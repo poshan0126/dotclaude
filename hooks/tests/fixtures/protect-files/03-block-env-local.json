@@ -1,0 +1,5 @@
+{
+  "name": "block .env.local file",
+  "stdin": { "tool_input": { "file_path": "/app/.env.local" } },
+  "expect_exit": 2
+}

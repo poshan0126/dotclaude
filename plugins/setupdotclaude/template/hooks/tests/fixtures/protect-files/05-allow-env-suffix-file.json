@@ -1,0 +1,5 @@
+{
+  "name": "allow development.env (suffix, not dotfile) -- confirm no false positive",
+  "stdin": { "tool_input": { "file_path": "docs/development.env.md" } },
+  "expect_exit": 0
+}

@@ -1,0 +1,5 @@
+{
+  "name": "empty input (no file_path) is allowed",
+  "stdin": { "tool_input": {} },
+  "expect_exit": 0
+}

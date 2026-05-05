@@ -1,0 +1,5 @@
+{
+  "name": "block write to raw device /dev/sda",
+  "stdin": { "tool_input": { "command": "cat file > /dev/sda" } },
+  "expect_exit": 2
+}

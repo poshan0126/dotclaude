@@ -34,6 +34,16 @@ Loads near backend code. Typed error classes, no swallowing, no floating promise
 
 Loads near migrations. Never modify existing migrations, reversibility, test both directions, no raw SQL when an ORM method exists, never seed production data in migrations.
 
+### database.md
+**Scope**: Path-scoped (migration directories. `**/migrations/**`, `**/prisma/**`, `**/alembic/**`, etc.)
+
+Loads when touching schema and migration files. Covers migration safety (reversibility, backward compatibility for one deploy cycle, NOT NULL with backfill, index creation strategy), transaction boundaries, destructive-statement guardrails, and foreign-key discipline.
+
+### error-handling.md
+**Scope**: Path-scoped (backend surfaces. Handlers, controllers, services, workers)
+
+Loads when touching server code. Covers error shape consistency, never-swallow rules, retry/backoff policies, fail-open vs fail-closed semantics, timeout discipline, and the difference between expected failures (validation) and unexpected failures (bugs. Propagate).
+
 ### frontend.md
 **Scope**: Path-scoped (`**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`, `**/*.css`, `**/*.scss`, `**/*.html`, `**/components/**`, `**/pages/**`, etc.)
 

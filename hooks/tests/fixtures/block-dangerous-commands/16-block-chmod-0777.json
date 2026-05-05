@@ -1,0 +1,5 @@
+{
+  "name": "block chmod 0777 (leading zero)",
+  "stdin": { "tool_input": { "command": "chmod 0777 file" } },
+  "expect_exit": 2
+}

@@ -1,0 +1,5 @@
+{
+  "name": "DELETE without WHERE followed by unrelated WHERE in later statement must still block",
+  "stdin": { "tool_input": { "command": "psql <<EOF\nDELETE FROM users;\nSELECT * FROM logs WHERE id=1;\nEOF" } },
+  "expect_exit": 2
+}

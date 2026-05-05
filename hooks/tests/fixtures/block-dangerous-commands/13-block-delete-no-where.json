@@ -1,0 +1,5 @@
+{
+  "name": "block DELETE FROM without WHERE",
+  "stdin": { "tool_input": { "command": "psql -c \"DELETE FROM users\"" } },
+  "expect_exit": 2
+}

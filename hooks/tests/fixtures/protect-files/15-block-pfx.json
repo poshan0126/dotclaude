@@ -1,0 +1,5 @@
+{
+  "name": "block *.pfx",
+  "stdin": { "tool_input": { "file_path": "cert.pfx" } },
+  "expect_exit": 2
+}

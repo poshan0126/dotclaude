@@ -22,7 +22,7 @@ Thanks for wanting to make this better. This project aims to be the standard `.c
 - Project scaffolding skills. This repo is for daily work, not project creation.
 - Vendor-specific configurations (specific CI providers, cloud platforms, etc.)
 
-> Plugin packaging is welcome. dotclaude itself ships as a marketplace (see the main README). Improvements to `marketplace.json`, the per-plugin `plugin.json` files, or `scripts/sync-plugins.sh` count as documentation improvements.
+> Plugin packaging is welcome. Dotclaude itself ships as a marketplace (see the main README). Improvements to `marketplace.json`, the per-plugin `plugin.json` files, or `scripts/sync-plugins.sh` count as documentation improvements.
 
 ## PR rules
 
@@ -85,6 +85,10 @@ If you add or rename a skill or agent, also:
 - Run `scripts/sync-plugins.sh` to mirror the file into `plugins/<name>/` and (if it's a skill) into `plugins/setupdotclaude/template/`.
 
 The sync script is the source of truth. Don't hand-edit files inside `plugins/` or `plugins/setupdotclaude/template/`. They will be overwritten on the next sync.
+
+### Hooks require tests
+
+Every new or modified hook script MUST ship with fixtures under `hooks/tests/fixtures/<hook-name>/`. Each fixture is a JSON file specifying the stdin payload Claude Code would deliver, the expected exit code (0 allow, 2 block), and any substrings that must or must not appear in stdout. Cover at minimum: (a) one allow case, (b) one block case, and (c) every adversarial input class the hook's regexes touch (quoted paths, shell expansions, multi-statement SQL, combined flags, case variants, redirection edge cases). PRs that add or change a hook without corresponding fixtures will be rejected. Run `bash hooks/tests/run-all.sh` locally and ensure it passes before opening a PR. CI (`.github/workflows/hook-tests.yml`) runs the same suite on Linux and macOS for every PR touching `hooks/`.
 
 ### Update READMEs
 

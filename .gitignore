@@ -10,3 +10,7 @@ Thumbs.db
 *.swp
 *~
 .devswarm-temp/
+
+# Accidental web-page saves
+hooks/*.html
+hooks/*_files/

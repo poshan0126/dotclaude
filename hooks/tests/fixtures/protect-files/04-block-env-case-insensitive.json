@@ -1,0 +1,5 @@
+{
+  "name": "block .ENV (case-insensitive)",
+  "stdin": { "tool_input": { "file_path": ".ENV" } },
+  "expect_exit": 2
+}

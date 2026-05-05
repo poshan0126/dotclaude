@@ -1,0 +1,5 @@
+{
+  "name": "--force-with-lease is allowed",
+  "stdin": { "tool_input": { "command": "git push --force-with-lease origin feature" } },
+  "expect_exit": 0
+}

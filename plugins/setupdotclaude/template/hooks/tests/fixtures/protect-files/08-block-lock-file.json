@@ -1,0 +1,5 @@
+{
+  "name": "block package-lock.json",
+  "stdin": { "tool_input": { "file_path": "package-lock.json" } },
+  "expect_exit": 2
+}
