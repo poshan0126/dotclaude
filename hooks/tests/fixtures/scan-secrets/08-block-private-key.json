@@ -1,0 +1,1 @@
+{"name":"private key block blocked","stdin":{"tool_name":"Write","tool_input":{"file_path":"a.pem","content":"-----BEGIN RSA PRIVATE KEY-----\nMIIabc\n-----END RSA PRIVATE KEY-----"}},"expect_exit":2,"expect_stdout_contains":["private key block"]}

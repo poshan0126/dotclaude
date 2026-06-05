@@ -1,0 +1,1 @@
+{"name":"ordinary source allowed","stdin":{"tool_name":"Write","tool_input":{"file_path":"src/app.js","content":"export const add = (a,b) => a + b"}},"expect_exit":0}

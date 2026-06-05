@@ -1,0 +1,1 @@
+{"name":"non Edit/Write tool ignored","stdin":{"tool_name":"Read","tool_input":{"file_path":"a.env"}},"expect_exit":0}
