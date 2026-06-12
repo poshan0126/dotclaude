@@ -42,7 +42,7 @@ Each PR should do exactly one thing. Don't bundle a new skill with a rule fix an
 ### Naming
 
 - Skill directories: `kebab-case`. `debug-fix/`, `test-writer/`.
-- Agent files: `kebab-case.md`. `code-reviewer.md`, `security-reviewer.md`.
+- Agent files: one dir per agent, `agents/<kebab-case>/<kebab-case>.md`. `agents/code-reviewer/code-reviewer.md`.
 - Rule files: `kebab-case.md`. `code-quality.md`, `frontend.md`.
 - Hook scripts: `kebab-case.sh`. `protect-files.sh`, `block-dangerous-commands.sh`.
 
@@ -86,7 +86,7 @@ If you add or rename a skill or agent:
 
 - Add or update its entry in `.claude-plugin/marketplace.json` (include `description`, `category`, and `keywords`; do NOT add a `version` there — versions live only in `plugin.json`).
 - Bump the `version` in `plugins/<name>/.claude-plugin/plugin.json` whenever the plugin's components change.
-- Create `plugins/<name>/` with a matching `plugin.json` and a symlink: `ln -s ../../../agents/<name>.md plugins/<name>/agents/<name>.md` (or `ln -s ../../../skills/<name> plugins/<name>/skills/<name>`).
+- Create `plugins/<name>/` with a matching `plugin.json` and a directory symlink: `ln -s ../../agents/<name> plugins/<name>/agents` for an agent, or `ln -s ../../../skills/<name> plugins/<name>/skills/<name>` for a skill. Always symlink directories, never individual `.md` files — the component scanner skips file symlinks.
 - Run `claude plugin validate . --strict` and make sure it passes. CI runs the same check on every PR.
 
 ### Hooks require tests

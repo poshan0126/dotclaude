@@ -31,7 +31,7 @@ Creates distinctive, production-grade UI. Finds or creates design tokens first, 
 
 ## Adding your own
 
-Create a new `.md` file in this directory:
+Create a directory per agent — `agents/<name>/<name>.md` (Claude Code scans agents directories recursively; one dir per agent is what lets the plugin marketplace symlink each agent individually):
 
 ```yaml
 ---

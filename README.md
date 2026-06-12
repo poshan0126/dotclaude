@@ -213,14 +213,14 @@ dotclaude/
 │   ├── claude-md/SKILL.md              #   /claude-md [audit]. Capture session learnings; keep CLAUDE.md honest.
 │   ├── fix-issue/SKILL.md              #   /fix-issue <#>. GitHub issue to tested fix with regression test.
 │   └── context-budget/SKILL.md         #   /context-budget [--api]. Estimates per-turn token cost of .claude/ + CLAUDE.md.
-├── agents/                             # Specialized subagents, copy to .claude/agents/   (also published as plugins)
-│   ├── code-reviewer.md                #   General code review.
-│   ├── silent-failure-hunter.md        #   Swallowed errors, failures masked as success.
-│   ├── pr-test-analyzer.md             #   Do the diff's tests actually verify the change?
-│   ├── security-reviewer.md            #   Security-focused code review.
-│   ├── performance-reviewer.md         #   Real bottlenecks, not theoretical ones.
-│   ├── doc-reviewer.md                 #   Documentation accuracy and completeness.
-│   └── frontend-designer.md            #   Distinctive UI, anti-AI-slop.
+├── agents/                             # Specialized subagents (one dir each), copy to .claude/agents/   (also published as plugins)
+│   ├── code-reviewer/                  #   General code review.
+│   ├── silent-failure-hunter/          #   Swallowed errors, failures masked as success.
+│   ├── pr-test-analyzer/               #   Do the diff's tests actually verify the change?
+│   ├── security-reviewer/              #   Security-focused code review.
+│   ├── performance-reviewer/           #   Real bottlenecks, not theoretical ones.
+│   ├── doc-reviewer/                   #   Documentation accuracy and completeness.
+│   └── frontend-designer/              #   Distinctive UI, anti-AI-slop.
 ├── hooks/                              # Hook scripts, copy to .claude/hooks/
 │   ├── protect-files.sh                #   Block edits to sensitive files and directories.
 │   ├── warn-large-files.sh             #   Block writes to build artifacts and binary files.

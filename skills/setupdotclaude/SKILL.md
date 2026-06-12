@@ -65,13 +65,13 @@ Hard mapping rules (no exceptions without the user overriding):
 
 | Component | Installs only if |
 |---|---|
-| `rules/frontend.md`, `agents/frontend-designer.md` | Frontend files exist (Phase 1.5) |
+| `rules/frontend.md`, `agents/frontend-designer/` | Frontend files exist (Phase 1.5) |
 | `rules/database.md` | Migrations or ORM detected (1.6), `paths:` rewritten to the real migration dirs |
 | `rules/security.md`, `rules/error-handling.md` | Backend/API surfaces exist (1.6), `paths:` rewritten to the real dirs (with monorepo prefixes) |
 | `rules/testing.md` | A test suite actually exists |
-| `agents/doc-reviewer.md` | Docs exist (1.7) |
-| `agents/code-reviewer.md`, `agents/silent-failure-hunter.md`, `agents/security-reviewer.md`, `agents/performance-reviewer.md` | Standard size and up |
-| `agents/pr-test-analyzer.md` | A test suite actually exists (1.4), Standard size and up |
+| `agents/doc-reviewer/` | Docs exist (1.7) |
+| `agents/code-reviewer/`, `agents/silent-failure-hunter/`, `agents/security-reviewer/`, `agents/performance-reviewer/` | Standard size and up |
+| `agents/pr-test-analyzer/` | A test suite actually exists (1.4), Standard size and up |
 | `hooks/format-on-save.sh` | Formatter detected AND selected |
 | `hooks/auto-test.sh` | Test runner detected AND explicitly selected |
 | `hooks/notify.sh`, `hooks/session-start.sh` | Selected in Round 2 |
@@ -91,6 +91,7 @@ mkdir -p .claude/rules .claude/hooks .claude/agents .claude/skills
 cp "$CLAUDE_PLUGIN_ROOT/template/rules/code-quality.md" .claude/rules/
 cp "$CLAUDE_PLUGIN_ROOT/template/hooks/protect-files.sh" .claude/hooks/   # ...one cp per approved file
 cp -r "$CLAUDE_PLUGIN_ROOT/template/skills/debug-fix" .claude/skills/     # skills copy as directories
+cp -r "$CLAUDE_PLUGIN_ROOT/template/agents/code-reviewer" .claude/agents/ # agents too (one dir per agent; scanned recursively)
 chmod +x .claude/hooks/*.sh
 ```
 
