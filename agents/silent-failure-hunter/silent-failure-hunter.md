@@ -1,6 +1,6 @@
 ---
 name: silent-failure-hunter
-description: Use after any change that touches error handling, catch blocks, fallbacks, retries, or async flows — and on every PR review. Finds code that fails silently: swallowed errors, failures masked as success, fallbacks that hide breakage.
+description: "Use after any change that touches error handling, catch blocks, fallbacks, retries, or async flows — and on every PR review. Finds code that fails silently: swallowed errors, failures masked as success, fallbacks that hide breakage."
 tools:
   - Read
   - Grep
