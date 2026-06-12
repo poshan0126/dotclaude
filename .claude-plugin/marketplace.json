@@ -91,7 +91,7 @@
       "source": "./",
       "strict": false,
       "skills": ["./skills/setupdotclaude"],
-      "description": "Bootstrap and customize dotclaude in any project. Copies the full template into .claude/ if missing, then tunes every config file to match your stack.",
+      "description": "Set up dotclaude in any project. Deep-scans the codebase, interviews you, then installs and customizes only the components the project actually needs.",
       "author": { "name": "poshan0126" },
       "license": "MIT",
       "homepage": "https://github.com/poshan0126/dotclaude",

@@ -10,7 +10,7 @@ Skills are slash commands you invoke with `/name`. They run in the main conversa
 ### /setupdotclaude
 **Trigger**: Manual only
 
-Bootstrap and customize dotclaude in any project. If `.claude/` is missing, the skill copies the bundled template in (rules, hooks, settings, agents, skills, `CLAUDE.md`). Then it scans the codebase to detect language, framework, package manager, test runner, linter, and architecture, and customizes every config file to match. Confirms every change before applying. Run this once after installing the plugin or after copying dotclaude into a new project.
+Set up dotclaude in any project on an install-nothing-without-evidence basis. Deep-scans the codebase (manifests, real source and test files, directory layout, git workflow, existing AI configs like `.cursorrules`), interviews you about scope and preferences, then proposes an install plan where every rule, hook, agent, and skill is justified by scan evidence. Only the approved plan is copied in, customized to the stack (real commands, real path globs, hooks wired only if installed). On an existing `.claude/` it runs as a gap analysis: add what's missing, propose removing what's unjustified. Confirms every change before applying.
 
 ### /debug-fix [issue, error, or description] [--fast]
 **Trigger**: Manual only

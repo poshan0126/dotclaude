@@ -21,7 +21,7 @@ Open your project in Claude Code and run:
 /setupdotclaude
 ```
 
-That's the whole flow. The `setupdotclaude` plugin bundles the complete dotclaude template (settings, rules, hooks, all agents and skills, `CLAUDE.md`). When you run the slash command it asks you to confirm, copies the bundled template into your project's `.claude/` and `CLAUDE.md` at the project root, then scans your codebase to detect language, framework, package manager, test runner, linter, and architecture, and tunes every config file to match. Every change is confirmed before it's applied.
+That's the whole flow. The `setupdotclaude` plugin carries the complete dotclaude kit (settings, rules, hooks, all agents and skills, the `CLAUDE.md` template) — but it doesn't dump it all into your project. When you run the slash command it deep-scans your codebase (manifests, real source and test files, directory layout, git workflow, existing AI configs), interviews you about scope and preferences, then proposes an install plan where every component is justified by evidence from the scan. Only the approved plan gets copied in, customized to your stack. Every change is confirmed before it's applied.
 
 After it finishes, restart Claude Code so the new agents, skills, rules, and hooks load.
 
@@ -60,7 +60,7 @@ rm -rf /tmp/dotclaude
 echo "CLAUDE.local.md" >> .gitignore
 ```
 
-Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1, just operating on files you copied yourself instead of files the plugin bundled. It also strips out anything you might have dragged in by accident: the `.claude-plugin/` folder and `hooks/tests/` fixtures if you did a bulk `cp -r`, plus the README files in each subfolder.
+Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1, just operating in reverse: since you copied the whole kit, it scans your project, builds the same evidence-based plan, and proposes *removing* the pieces your project doesn't need (plus repo artifacts like folder READMEs, `.claude-plugin/`, and `hooks/tests/` if you did a bulk `cp -r`), then customizes what stays.
 
 ## Troubleshooting
 
@@ -92,7 +92,7 @@ Skills are invoked with `/name` in your Claude Code session. All except `/test-w
 
 | Command | Arguments | Description |
 |---------|-----------|-------------|
-| `/setupdotclaude` | `[focus area]` | Bootstrap and customize dotclaude in any project. If `.claude/` is missing, the skill copies the bundled template in (rules, hooks, settings, agents, skills, `CLAUDE.md`). Then it scans your codebase to detect language, framework, package manager, test runner, linter, and architecture, and customizes every config file to match. Confirms every change before applying. |
+| `/setupdotclaude` | `[focus area]` | Set up dotclaude in any project. Deep-scans the codebase (manifests, real source and test files, layout, git workflow, existing AI configs), interviews you about scope, then proposes an evidence-based install plan — only approved components get copied in and customized to your stack. On an existing `.claude/`, runs as a gap analysis instead. Confirms every change before applying. |
 | `/debug-fix` | `[issue #, error, or description] [--fast]` | Find and fix a bug. Default is the careful path: reproduce, investigate, write a regression test, fix, commit. Add `--fast` for emergency production mode (`hotfix/` branch from production, minimal change, critical tests only, ships a `[HOTFIX]` PR). Warns if a fast fix turns out to be complex. |
 | `/ship` | `[commit message or PR title]` | Full shipping workflow. Scans changes, stages files (skipping secrets, locks, and build output), drafts a commit message in the repo's style, pushes, and creates a PR. Every step requires confirmation. |
 | `/pr-review` | `[PR #, "staged", file path, or omit]` | Delegates review to specialist agents: `@code-reviewer`, `@security-reviewer` (if security-related code changed), `@performance-reviewer` (if perf-sensitive), `@doc-reviewer` (if docs changed). Synthesizes a unified report with severity-ranked findings. |
