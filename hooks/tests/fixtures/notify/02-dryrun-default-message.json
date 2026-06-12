@@ -1,0 +1,7 @@
+{
+  "name": "dry-run falls back to default message when input has none",
+  "stdin": {},
+  "env": { "DOTCLAUDE_NOTIFY_DRYRUN": "1" },
+  "expect_exit": 0,
+  "expect_stdout_contains": ["Claude Code needs your attention"]
+}

@@ -1,93 +1,207 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "dotclaude",
   "owner": {
-    "name": "poshan0126"
+    "name": "poshan0126",
+    "email": "poshan0126@gmail.com"
   },
-  "description": "Lean, token-efficient agents and skills for daily Claude Code development. Install the whole kit by cloning the repo, or pick individual plugins from this marketplace.",
+  "description": "Lean, token-efficient agents, skills, and safety hooks for daily Claude Code development. Install the whole kit with setupdotclaude, or pick individual plugins.",
+  "version": "2.0.0",
   "plugins": [
     {
       "name": "code-reviewer",
-      "source": "./plugins/code-reviewer",
+      "source": "./",
+      "strict": false,
+      "agents": ["./agents/code-reviewer.md"],
       "description": "Reviews code for real bugs: off-by-ones, null derefs, race conditions, swallowed errors. Skips style nitpicks.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "code-review",
+      "keywords": ["review", "bugs", "correctness"]
     },
     {
       "name": "security-reviewer",
-      "source": "./plugins/security-reviewer",
+      "source": "./",
+      "strict": false,
+      "agents": ["./agents/security-reviewer.md"],
       "description": "OWASP-style review: injection, auth, data exposure, weak crypto. Severity-ranked with file:line + fix.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "security",
+      "keywords": ["security", "owasp", "audit"]
     },
     {
       "name": "performance-reviewer",
-      "source": "./plugins/performance-reviewer",
+      "source": "./",
+      "strict": false,
+      "agents": ["./agents/performance-reviewer.md"],
       "description": "Finds real bottlenecks. DB N+1, memory leaks, blocking calls, re-renders.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "code-review",
+      "keywords": ["performance", "bottlenecks", "profiling"]
     },
     {
       "name": "doc-reviewer",
-      "source": "./plugins/doc-reviewer",
+      "source": "./",
+      "strict": false,
+      "agents": ["./agents/doc-reviewer.md"],
       "description": "Cross-references docs against actual source. Flags drift, missing params, dead references.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "documentation",
+      "keywords": ["documentation", "accuracy", "review"]
     },
     {
       "name": "frontend-designer",
-      "source": "./plugins/frontend-designer",
+      "source": "./",
+      "strict": false,
+      "agents": ["./agents/frontend-designer.md"],
       "description": "Builds production-grade UI. Tokens-first, anti-AI-slop aesthetics, design tokens enforced.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "design",
+      "keywords": ["frontend", "ui", "design-tokens", "accessibility"]
+    },
+    {
+      "name": "safety-hooks",
+      "source": "./",
+      "strict": false,
+      "hooks": "./hooks/hooks.json",
+      "description": "Deterministic guardrails as PreToolUse hooks: blocks dangerous commands (force push, rm -rf, DROP TABLE), secret leaks, edits to protected files, and writes to build artifacts.",
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "security",
+      "keywords": ["hooks", "safety", "secrets", "guardrails"]
     },
     {
       "name": "setupdotclaude",
-      "source": "./plugins/setupdotclaude",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/setupdotclaude"],
       "description": "Bootstrap and customize dotclaude in any project. Copies the full template into .claude/ if missing, then tunes every config file to match your stack.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "productivity",
+      "keywords": ["setup", "bootstrap", "configuration"]
     },
     {
       "name": "debug-fix",
-      "source": "./plugins/debug-fix",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/debug-fix"],
       "description": "Find and fix a bug. Default is the careful path (reproduce, investigate, test). Add `--fast` for emergency hotfix mode.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "development",
+      "keywords": ["debugging", "hotfix", "regression-test"]
     },
     {
       "name": "ship",
-      "source": "./plugins/ship",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/ship"],
       "description": "Commit, push, create PR with confirmation at every step. Blocks secrets and force-push.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "workflow",
+      "keywords": ["git", "commit", "pull-request"]
     },
     {
       "name": "pr-review",
-      "source": "./plugins/pr-review",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/pr-review"],
       "description": "Review PR or staged changes via specialist agents. Synthesizes a unified severity-ranked report.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "code-review",
+      "keywords": ["pull-request", "review", "agents"]
     },
     {
       "name": "tdd",
-      "source": "./plugins/tdd",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/tdd"],
       "description": "Strict red-green-refactor TDD loop. Failing test, then minimum code, then refactor. Commits after each cycle.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "testing",
+      "keywords": ["tdd", "red-green-refactor", "testing"]
     },
     {
       "name": "explain",
-      "source": "./plugins/explain",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/explain"],
       "description": "Explain code with one-sentence summary, mental model, ASCII diagram, and modification guide.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "documentation",
+      "keywords": ["explain", "onboarding", "mental-model"]
     },
     {
       "name": "refactor",
-      "source": "./plugins/refactor",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/refactor"],
       "description": "Safely refactor with tests as a safety net. Writes tests first if none exist.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "development",
+      "keywords": ["refactoring", "tests", "safety-net"]
     },
     {
       "name": "test-writer",
-      "source": "./plugins/test-writer",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/test-writer"],
       "description": "Write comprehensive tests covering happy/edge/error/concurrency paths. Verifies tests actually catch bugs.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "testing",
+      "keywords": ["tests", "coverage", "edge-cases"]
     },
     {
       "name": "context-budget",
-      "source": "./plugins/context-budget",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/context-budget"],
       "description": "Estimate per-turn token cost of your .claude/ configuration and CLAUDE.md. Always-loaded vs path-scoped vs invoked-only, with top contributors. Use --api for exact counts.",
-      "license": "MIT"
+      "author": { "name": "poshan0126" },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "productivity",
+      "keywords": ["tokens", "context", "budget"]
     }
   ]
 }

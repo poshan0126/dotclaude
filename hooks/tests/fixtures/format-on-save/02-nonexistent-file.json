@@ -1,0 +1,5 @@
+{
+  "name": "nonexistent file exits silently",
+  "stdin": { "tool_input": { "file_path": "/nonexistent/path/file.ts" } },
+  "expect_exit": 0
+}

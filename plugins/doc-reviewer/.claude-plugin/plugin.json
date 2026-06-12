@@ -1,8 +1,0 @@
-{
-  "name": "doc-reviewer",
-  "description": "Cross-references docs against actual source. Flags drift, missing params, dead references.",
-  "author": { "name": "poshan0126" },
-  "license": "MIT",
-  "homepage": "https://github.com/poshan0126/dotclaude",
-  "repository": "https://github.com/poshan0126/dotclaude"
-}

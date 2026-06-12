@@ -24,23 +24,23 @@ When bootstrapping:
 
 2. If the user says **no**, stop with: "setupdotclaude needs dotclaude's content to operate. Either clone https://github.com/poshan0126/dotclaude and copy the files in, or re-run and choose `yes` to use the bundled template."
 
-3. If the user says **yes**, run these Bash commands to copy the bundled template (Claude Code sets `$CLAUDE_PLUGIN_ROOT` to this plugin's installation directory):
+3. If the user says **yes**, run these Bash commands to copy the dotclaude content bundled in this plugin (Claude Code sets `$CLAUDE_PLUGIN_ROOT` to this plugin's installation directory, which is the full dotclaude repo):
 
    ```bash
    mkdir -p .claude
-   cp    "$CLAUDE_PLUGIN_ROOT/template/settings.json"          .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/rules"                  .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/skills"                 .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/agents"                 .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/hooks"                  .claude/
+   cp    "$CLAUDE_PLUGIN_ROOT/settings.json"          .claude/
+   cp -r "$CLAUDE_PLUGIN_ROOT/rules"                  .claude/
+   cp -r "$CLAUDE_PLUGIN_ROOT/skills"                 .claude/
+   cp -r "$CLAUDE_PLUGIN_ROOT/agents"                 .claude/
+   cp -r "$CLAUDE_PLUGIN_ROOT/hooks"                  .claude/
    chmod +x .claude/hooks/*.sh
    ```
 
-   Then handle the project-root files (don't clobber existing `CLAUDE.md`):
+   Then handle the project-root files (don't clobber existing `CLAUDE.md`; note the template ships as `CLAUDE.template.md` and lands in the project as `CLAUDE.md`):
 
    ```bash
-   [ -f ./CLAUDE.md ]                  || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.md" ./
-   [ -f ./CLAUDE.local.md.example ]    || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.local.md.example" ./
+   [ -f ./CLAUDE.md ]                  || cp "$CLAUDE_PLUGIN_ROOT/CLAUDE.template.md" ./CLAUDE.md
+   [ -f ./CLAUDE.local.md.example ]    || cp "$CLAUDE_PLUGIN_ROOT/CLAUDE.local.md.example" ./
    ```
 
    Then ensure `CLAUDE.local.md` is gitignored:
@@ -62,15 +62,16 @@ Before continuing, delete files and directories inside `.claude/` that come alon
 - `.claude/README.md` (repo README accidentally copied in)
 - `.claude/CONTRIBUTING.md` (repo contributing guide)
 - `.claude/LICENSE` (repo license)
-- `.claude/CLAUDE.md` (`CLAUDE.md` belongs at the project root, not inside `.claude/`)
+- `.claude/CLAUDE.md` and `.claude/CLAUDE.template.md` (`CLAUDE.md` belongs at the project root, not inside `.claude/`)
 - `.claude/.gitignore` (for the dotclaude repo, not the project; the project has its own root `.gitignore`)
 - `.claude/settings.local.json.example` (example template, not used at runtime)
+- `.claude/hooks/hooks.json` (plugin manifest for the safety-hooks plugin; ignored outside a plugin)
 - `.claude/rules/README.md`, `.claude/agents/README.md`, `.claude/hooks/README.md`, `.claude/skills/README.md` (folder descriptions for GitHub browsing only)
 
-**Directories** to remove from `.claude/` (only exist when a user did a bulk `cp -r dotclaude/* .claude/`; they belong to the dotclaude repo, not to a consuming project):
+**Directories** to remove from `.claude/` (come along with the plugin bundle or a bulk `cp -r dotclaude/* .claude/`; they belong to the dotclaude repo, not to a consuming project):
 - `.claude/.claude-plugin/` (marketplace catalog, only used for plugin distribution)
-- `.claude/plugins/` (per-plugin self-contained copies, only used for plugin distribution)
-- `.claude/scripts/` (repo maintenance scripts like sync-plugins.sh)
+- `.claude/hooks/tests/` (hook test fixtures for the dotclaude repo's CI)
+- `.claude/plugins/` and `.claude/scripts/` (only present in old clones; obsolete)
 
 After cleanup, briefly tell the user what was removed (count of files plus directories), then continue.
 
@@ -180,14 +181,9 @@ Update the `paths:` frontmatter to match actual backend directories (same paths 
 
 ### 3.7 hooks/format-on-save.sh
 
-Uncomment the section matching the detected formatter:
-- Prettier found: uncomment Node.js section
-- Black/isort found: uncomment Python section
-- Ruff found: uncomment Ruff section
-- Biome found: uncomment Biome section
-- rustfmt found: uncomment Rust section
-- gofmt found: uncomment Go section
-- Multiple languages: uncomment all relevant sections
+The script auto-detects formatters at runtime (Biome, Prettier, Ruff, Black+isort, rustfmt, gofmt), requiring both the binary and a config file. Verify the project's detected formatter is covered:
+- If covered: leave the script unchanged.
+- If the project uses a formatter the script doesn't know (e.g. `swiftformat`, `php-cs-fixer`): propose adding a detection block for it, following the existing pattern (check binary + config, format only matching extensions, redirect all output).
 
 ### 3.8 hooks/block-dangerous-commands.sh
 

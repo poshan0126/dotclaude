@@ -1,5 +1,0 @@
-{
-  "name": "block *.pem",
-  "stdin": { "tool_input": { "file_path": "certs/server.pem" } },
-  "expect_exit": 2
-}

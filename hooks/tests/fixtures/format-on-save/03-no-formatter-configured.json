@@ -1,0 +1,6 @@
+{
+  "name": "existing file with no configured formatter is silent (zero tokens)",
+  "stdin": { "tool_input": { "file_path": "hooks/notify.sh" } },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["formatted", "error"]
+}

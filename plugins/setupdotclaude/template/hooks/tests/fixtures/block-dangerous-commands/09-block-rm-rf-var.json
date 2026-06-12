@@ -1,5 +1,0 @@
-{
-  "name": "block rm -rf $VAR (unknown-expansion conservative block)",
-  "stdin": { "tool_input": { "command": "rm -rf $TRASH" } },
-  "expect_exit": 2
-}

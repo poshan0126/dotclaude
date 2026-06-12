@@ -27,9 +27,8 @@ For every `.md` file in `.claude/rules/`, read the YAML frontmatter (the block b
 
 | Frontmatter contains | Classification | Per-turn cost |
 |---|---|---|
-| `alwaysApply: true` | Always-loaded | Every turn |
 | `paths: [...]` | Path-scoped | Loaded only when working near matched files |
-| Neither | Defaults to always-loaded; flag for review | Every turn |
+| No `paths:` (or no frontmatter) | Always-loaded | Every turn |
 
 Other categories:
 - `./CLAUDE.md` -> always-loaded (by definition).
@@ -75,8 +74,8 @@ Method: heuristic (chars/4)        [or: Anthropic count_tokens API]
 
 Always-loaded (every turn):                 ~N tokens
   CLAUDE.md                                  ~N tokens
-  .claude/rules/code-quality.md  (alwaysApply)  ~N tokens
-  .claude/rules/testing.md       (alwaysApply)  ~N tokens
+  .claude/rules/code-quality.md  (always)      ~N tokens
+  .claude/rules/testing.md       (always)      ~N tokens
 
 Path-scoped (loaded near matched files):    ~N tokens (max, if every glob matches)
   .claude/rules/security.md      (paths: src/api/**, ...)  ~N tokens
@@ -102,7 +101,7 @@ End the report with the highest-leverage trim recommendation if any class is ove
 | Class                          | Target              | Hard cap            | Action when over |
 |-------------------------------|--------------------|--------------------|------------------|
 | `CLAUDE.md`                   | <25 non-blank lines | <50 non-blank lines | Trim per Phase 4 of `/setupdotclaude`. |
-| Each `alwaysApply` rule       | <30 lines, ~250 tok | n/a                 | Push content to a path-scoped rule or into an agent. |
+| Each always-loaded rule       | <30 lines, ~250 tok | n/a                 | Push content to a path-scoped rule or into an agent. |
 | Total always-loaded           | <1000 tokens        | <1500 tokens        | Identify the single biggest contributor and trim it. |
 
 ## Caveats to mention in the report

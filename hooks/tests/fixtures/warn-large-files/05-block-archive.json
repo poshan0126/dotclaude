@@ -1,0 +1,6 @@
+{
+  "name": "archive .tar.gz blocked",
+  "stdin": { "tool_input": { "file_path": "release/build.tar.gz" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["archive"]
+}

@@ -16,6 +16,12 @@ fi
 
 TITLE="Claude Code"
 
+# Test/dry-run mode: print instead of notifying (used by hook fixtures).
+if [ "${DOTCLAUDE_NOTIFY_DRYRUN:-0}" = "1" ]; then
+  echo "notify: $TITLE: $MESSAGE"
+  exit 0
+fi
+
 # macOS
 if command -v osascript >/dev/null 2>&1; then
   osascript -e "display notification \"$MESSAGE\" with title \"$TITLE\"" 2>/dev/null

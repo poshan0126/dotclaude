@@ -1,0 +1,6 @@
+{
+  "name": "json config file skipped (run from repo root)",
+  "stdin": { "tool_input": { "file_path": "hooks/tests/fixtures/auto-test/01-skip-missing-file-path.json" } },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["auto-test"]
+}

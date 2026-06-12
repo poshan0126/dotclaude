@@ -1,5 +1,0 @@
-{
-  "name": "block combined short flag -vf",
-  "stdin": { "tool_input": { "command": "git push -vf origin feature" } },
-  "expect_exit": 2
-}

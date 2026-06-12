@@ -1,5 +1,0 @@
-{
-  "name": "safe ls is allowed",
-  "stdin": { "tool_input": { "command": "ls -la /tmp" } },
-  "expect_exit": 0
-}

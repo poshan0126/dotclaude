@@ -1,0 +1,7 @@
+{
+  "name": "dry-run extracts message from hook input",
+  "stdin": { "message": "Claude needs permission to run npm test" },
+  "env": { "DOTCLAUDE_NOTIFY_DRYRUN": "1" },
+  "expect_exit": 0,
+  "expect_stdout_contains": ["Claude needs permission to run npm test"]
+}

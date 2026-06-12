@@ -1,5 +1,0 @@
-{
-  "name": "2>/dev/null must not match destructive /dev/ rule",
-  "stdin": { "tool_input": { "command": "ls 2>/dev/null" } },
-  "expect_exit": 0
-}

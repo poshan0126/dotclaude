@@ -1,6 +1,6 @@
 # dotclaude
 
-A lean `.claude/` setup for daily development. Five reviewer agents, nine workflow skills, six modular rules, and a few safety hooks. No bloat, no model assignments, no opinions you can't override.
+A lean `.claude/` setup for daily development. Five reviewer agents, nine workflow skills, six modular rules, and eight safety/productivity hooks. No bloat, no model assignments, no opinions you can't override.
 
 ## Get started
 
@@ -29,11 +29,15 @@ If you only want one or two pieces instead of the full kit, install them individ
 
 ```
 /plugin install code-reviewer@dotclaude
-/plugin install pr-review@dotclaude
+/plugin install safety-hooks@dotclaude
 /plugin install ship@dotclaude
 ```
 
-Full plugin list: `code-reviewer`, `security-reviewer`, `performance-reviewer`, `doc-reviewer`, `frontend-designer`, `setupdotclaude`, `debug-fix`, `ship`, `pr-review`, `tdd`, `explain`, `refactor`, `test-writer`, `context-budget`.
+Full plugin list: `code-reviewer`, `security-reviewer`, `performance-reviewer`, `doc-reviewer`, `frontend-designer`, `safety-hooks`, `setupdotclaude`, `debug-fix`, `ship`, `pr-review`, `tdd`, `explain`, `refactor`, `test-writer`, `context-budget`.
+
+The `safety-hooks` plugin packages the four PreToolUse guards (dangerous commands, secret scanning, protected files, build artifacts) so you get deterministic guardrails without copying any files.
+
+Plugins are not semver-versioned: every commit to `main` is an update (`/plugin update`), the same model Anthropic's own [skills marketplace](https://github.com/anthropics/skills) uses.
 
 ### Option 2: clone the repo
 
@@ -47,7 +51,7 @@ mkdir -p .claude
 
 cp /tmp/dotclaude/settings.json .claude/
 cp -r /tmp/dotclaude/{rules,skills,agents,hooks} .claude/
-cp /tmp/dotclaude/CLAUDE.md ./
+cp /tmp/dotclaude/CLAUDE.template.md ./CLAUDE.md
 cp /tmp/dotclaude/CLAUDE.local.md.example ./
 
 chmod +x .claude/hooks/*.sh
@@ -56,7 +60,7 @@ rm -rf /tmp/dotclaude
 echo "CLAUDE.local.md" >> .gitignore
 ```
 
-Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1, just operating on files you copied yourself instead of files the plugin bundled. It also strips out anything you might have dragged in by accident: the `.claude-plugin/`, `plugins/`, and `scripts/` folders if you did a bulk `cp -r`, plus the README files in each subfolder.
+Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1, just operating on files you copied yourself instead of files the plugin bundled. It also strips out anything you might have dragged in by accident: the `.claude-plugin/` folder and `hooks/tests/` fixtures if you did a bulk `cp -r`, plus the README files in each subfolder.
 
 ## Troubleshooting
 
@@ -78,7 +82,7 @@ Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1,
 - `rules/security.md`. Add paths specific to your project's sensitive areas, beyond the defaults.
 - `CLAUDE.md`. Architectural decisions, domain knowledge, workflow quirks unique to your project.
 - `CLAUDE.local.md`. Personal preferences (gitignored). Rename the `.example` file to start.
-- `hooks/format-on-save.sh`. If detection missed your formatter, uncomment the right section manually.
+- `hooks/format-on-save.sh`. Auto-detects Biome, Prettier, Ruff, Black, rustfmt, and gofmt. If your formatter isn't covered, add a detection block to the script.
 
 The defaults are foundations. Your edits on top are what make Claude effective for *your* project.
 
@@ -161,16 +165,17 @@ paths:
 
 ```
 dotclaude/
-├── CLAUDE.md                           # Template project instructions, copy to your project root
+├── CLAUDE.md                           # Instructions for working on this repo (not shipped)
+├── CLAUDE.template.md                  # Template project instructions, lands in your project as CLAUDE.md
 ├── CLAUDE.local.md.example             # Personal overrides template, rename to CLAUDE.local.md
 ├── LICENSE                             # MIT
 ├── settings.json                       # Project settings, copy to .claude/
 ├── settings.local.json.example         # Personal settings template, copy to .claude/settings.local.json
 ├── .gitignore                          # Gitignore for the dotclaude repo (not for your project's .claude/)
 ├── .claude-plugin/                     # Marketplace catalog (only used by the plugin install path)
-│   └── marketplace.json                #   14 plugin entries pointing at ./plugins/<name>
+│   └── marketplace.json                #   15 plugin entries publishing the top-level dirs directly (source "./")
 ├── rules/                              # Modular instructions, copy to .claude/rules/
-│   ├── code-quality.md                 #   Principles, naming, comments, markers, file organization
+│   ├── code-quality.md                 #   Principles, naming, comments, markers, file organization (always loaded)
 │   ├── testing.md                      #   Testing conventions (always loaded)
 │   ├── database.md                     #   Migration safety rules (loads near migration files)
 │   ├── error-handling.md               #   Error handling patterns (loads near backend files)
@@ -198,11 +203,12 @@ dotclaude/
 │   ├── scan-secrets.sh                 #   Detect API keys, tokens, and credentials in file content.
 │   ├── block-dangerous-commands.sh     #   Block push to main, force push, reset --hard, publish, rm -rf, DROP TABLE.
 │   ├── format-on-save.sh               #   Auto-format after edits. Detects Prettier, Black, Ruff, Biome, rustfmt, gofmt.
-│   └── session-start.sh                #   Inject branch, commit, stash, and PR context at session start.
-├── plugins/                            # Per-plugin self-contained copies (only used by the plugin install path)
-│   └── <14 plugins>/                   #   Each: .claude-plugin/plugin.json + mirrored agents/<name>.md or skills/<name>/SKILL.md
-└── scripts/
-    └── sync-plugins.sh                 # Mirrors agents/ + skills/ into plugins/<name>/ and bundles the template inside setupdotclaude
+│   ├── auto-test.sh                    #   Run the matching test file after edits. Silent on success.
+│   ├── session-start.sh                #   Inject branch + dirty state at session start (verbose mode opt-in).
+│   ├── notify.sh                       #   Native OS notification when Claude needs attention (macOS/Linux/WSL).
+│   ├── hooks.json                      #   Manifest for the safety-hooks plugin (not used in .claude/).
+│   └── tests/                          #   Fixture-based test suite: bash hooks/tests/run-all.sh
+└── .github/workflows/ci.yml            # CI: hook fixtures (Linux+macOS) + claude plugin validate --strict
 ```
 
 ## What NOT to put in .claude/
@@ -214,7 +220,7 @@ Keep `.claude/` focused on what helps your daily work, not what's nice-to-know:
 - Verbose explanations. Every line in `CLAUDE.md` costs tokens. If removing it doesn't cause mistakes, cut it.
 - Frequently changing info. Volatile details belong in code comments or docs, not in `CLAUDE.md`.
 
-Token cost rule of thumb: rules with `alwaysApply: true` cost tokens every turn. Path-scoped rules only cost tokens when working near matched files. Skills and agents cost tokens only when invoked.
+Token cost rule of thumb: rules without `paths:` frontmatter (and `CLAUDE.md`) cost tokens every turn. Path-scoped rules only cost tokens when working near matched files. Skills and agents cost tokens only when invoked. Run `/context-budget` for the exact breakdown, or `claude plugin details <plugin>@dotclaude` for a plugin's always-on vs on-invoke cost.
 
 ## Credits
 

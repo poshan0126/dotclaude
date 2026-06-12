@@ -48,19 +48,19 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.sh",
-            "timeout": 5000,
+            "timeout": 10,
             "statusMessage": "Checking file protections..."
           },
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/warn-large-files.sh",
-            "timeout": 5000,
+            "timeout": 10,
             "statusMessage": "Checking for build artifacts..."
           },
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scan-secrets.sh",
-            "timeout": 5000,
+            "timeout": 10,
             "statusMessage": "Scanning for secrets..."
           }
         ]
@@ -71,7 +71,7 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-dangerous-commands.sh",
-            "timeout": 5000,
+            "timeout": 10,
             "statusMessage": "Checking command safety..."
           }
         ]
@@ -84,20 +84,26 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format-on-save.sh",
-            "timeout": 15000,
+            "timeout": 30,
             "statusMessage": "Formatting..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-test.sh",
+            "timeout": 120,
+            "statusMessage": "Running matching tests..."
           }
         ]
       }
     ],
     "SessionStart": [
       {
-        "matcher": "",
+        "matcher": "startup|resume|clear",
         "hooks": [
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh",
-            "timeout": 5000,
+            "timeout": 10,
             "statusMessage": "Loading project context..."
           }
         ]
@@ -109,7 +115,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "which osascript >/dev/null 2>&1 && osascript -e 'display notification \"Claude Code needs your attention\" with title \"Claude Code\"' || which notify-send >/dev/null 2>&1 && notify-send 'Claude Code' 'Claude Code needs your attention' || true"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh",
+            "timeout": 10
           }
         ]
       }

@@ -2,7 +2,9 @@
 
 Hook scripts are deterministic enforcement. Unlike rules (advisory), hooks **guarantee** behavior by blocking or modifying tool calls before or after they execute.
 
-Hooks are wired in `settings.json` under the `"hooks"` key. Each hook specifies an event, a matcher, and a command to run.
+Hooks are wired in `settings.json` under the `"hooks"` key. Each hook specifies an event, a matcher, and a command to run. `timeout` values are in **seconds**.
+
+`hooks.json` in this directory is not loaded from `.claude/` — it's the manifest for the `safety-hooks` plugin, which packages the four PreToolUse guards below for one-command install via `/plugin install safety-hooks@dotclaude`. `tests/` holds the fixture suite (`bash hooks/tests/run-all.sh`); neither belongs in a project's `.claude/hooks/`.
 
 ## Available hooks
 
@@ -66,6 +68,16 @@ Injects dynamic project context at session start.
 - Active PR info via `gh` (adds a network round-trip).
 
 The verbose payload runs ~30 to 90 tokens per session. Default is recommended for daily iterative work where every new conversation pays this cost.
+
+### auto-test.sh
+**Event**: PostToolUse (`Edit` | `Write`)
+
+Finds and runs the test file matching the edited source file (same-dir, `__tests__/`, or parallel `tests/` conventions; vitest/jest/mocha, pytest/unittest, `go test`, `cargo test`). Silent on success — passing tests contribute zero tokens. Only emits output when tests fail. Skips test files themselves, config files, and non-code extensions.
+
+### notify.sh
+**Event**: Notification
+
+Sends a native OS notification when Claude needs your attention. Supports macOS (`osascript`), Linux (`notify-send`), and WSL (PowerShell toast). Extracts the actual message from the hook input when `jq` is available. Exits silently when no notifier exists. Set `DOTCLAUDE_NOTIFY_DRYRUN=1` to print instead of notify (used by the test fixtures).
 
 ## Adding your own
 

@@ -1,49 +1,28 @@
-# Project Instructions
+# dotclaude (this repo)
 
-> REPLACE: Customize this file for your project. Delete sections that don't apply. Every line costs tokens. Code style lives in `.claude/rules/code-quality.md`, don't duplicate here. Run `/setupdotclaude` to auto-customize, or edit manually and delete all `> REPLACE:` blocks when done. Target: under 25 non-blank lines after customization. Hard cap: 50.
+A Claude Code plugin marketplace: agents, skills, rules, and safety hooks, published from the top-level directories. There is no application code, build, or package manager here — everything is bash + markdown + JSON.
 
 ## Commands
 
 ```bash
-# Build
-npm run build            # or: cargo build, go build ./..., make build
-
-# Test
-npm test                 # run full suite
-npm test -- path/to/file # run single test file
-
-# Lint & Format
-npm run lint             # check style
-npm run lint:fix         # auto-fix style
-npm run typecheck        # type checking
-
-# Dev
-npm run dev              # start dev server
+bash hooks/tests/run-all.sh          # run all hook fixture tests (requires jq)
+claude plugin validate . --strict    # validate marketplace + plugin manifests
 ```
 
 ## Architecture
 
-> REPLACE: Describe non-obvious architectural decisions. Don't list files; Claude can explore.
+- Top-level `agents/`, `skills/`, `rules/`, `hooks/` are the single source of truth. `.claude-plugin/marketplace.json` publishes them directly via `source: "./"` + `strict: false` component arrays — there are no per-plugin copies to keep in sync.
+- `CLAUDE.template.md` is the template shipped to user projects by `/setupdotclaude`. This file (`CLAUDE.md`) is for working on the repo itself — don't confuse the two.
+- `settings.json` at the repo root is the template users copy to `.claude/settings.json`; it wires the hooks.
 
-- `src/`. Application source.
-- `src/api/`. REST endpoints (versioned: `/v1/`).
-- `src/services/`. Business logic (no direct DB access from controllers).
-- `src/models/`. Data models and types.
+## Key decisions
 
-## Key Decisions
-
-> REPLACE: Record WHY non-obvious choices were made. This is the most valuable section. Examples: "Auth tokens in httpOnly cookies because XSS risk", "Billing is a separate module for audit independence".
-
-## Domain Knowledge
-
-> REPLACE: Terms, abbreviations, or concepts that aren't obvious from the code. Example: "SKU" = Stock Keeping Unit, the unique product identifier from our warehouse system.
+- Plugins carry no `version`: updates are git-SHA-based (every commit is an update), same as anthropics/skills. Don't add version fields to marketplace entries.
+- Hooks fail open (exit 0) when `jq` is missing, except file-protection hooks which fail closed. Hook `timeout` values are in seconds.
+- Agents never set `model` — users choose their own.
 
 ## Workflow
 
-- Run typecheck after making a series of code changes
-- Prefer fixing the root cause over adding workarounds
-- When unsure about approach, use plan mode (`Shift+Tab`) before coding
-
-## Don'ts
-
-- Don't modify generated files (`*.gen.ts`, `*.generated.*`)
+- Every new or modified hook MUST ship with fixtures under `hooks/tests/fixtures/<hook-name>/` (see CONTRIBUTING.md).
+- After changing any manifest, skill, or agent frontmatter, run `claude plugin validate . --strict`.
+- Adding/renaming a skill or agent requires updating `.claude-plugin/marketplace.json` and the folder README.
