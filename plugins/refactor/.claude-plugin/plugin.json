@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "refactor",
   "version": "2.1.0",
-  "description": "Safely refactor with tests as a safety net. Writes tests first if none exist.",
+  "description": "Safely refactor with tests as a safety net. Writes tests first if none exist. Use --diff to simplify just the working diff before committing.",
   "author": {
     "name": "poshan0126"
   },

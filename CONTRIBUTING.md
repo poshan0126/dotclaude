@@ -36,7 +36,7 @@ Each PR should do exactly one thing. Don't bundle a new skill with a rule fix an
 |---|---|---|
 | **Rules** (`.md` in `rules/`) | `paths:` frontmatter for scoped rules; no frontmatter for always-loaded | Language-specific conventions Claude already knows |
 | **Skills** (`SKILL.md`) | `name`, `description` in frontmatter | Hardcoded package names, model assignments |
-| **Agents** (`.md` in `agents/`) | `name`, `description`, `tools` in frontmatter | `model` field (users choose their own model) |
+| **Agents** (`agents/<name>/<name>.md`) | `name`, `description` (delegation trigger: "Use after/when..."), `tools` in frontmatter | `model` field (users choose their own model) |
 | **Hooks** (`.sh` in `hooks/`) | `jq` availability check, proper exit codes (0 = allow, 2 = block) | Hardcoded paths, missing `#!/bin/bash` |
 
 ### Naming

@@ -58,7 +58,7 @@ Explains code with a one-sentence summary, a mental model analogy, an ASCII diag
 Safe refactoring with tests as a safety net. Writes tests first if none exist, makes changes in small testable steps, verifies no behavior change. `--diff` mode is the pre-commit polish pass: simplifies only the current working diff (inline one-use abstractions, drop dead params and redundant comments) without touching surrounding code.
 
 ### /test-writer
-**Trigger**: Automatic (when new features are added)
+**Trigger**: Automatic — after adding a function, endpoint, or component, or changing behavior, when the change has no corresponding test changes. Not for config, docs, or test-only diffs.
 
 Writes comprehensive tests covering every code path: happy path, edge cases, nulls, type boundaries, error paths, concurrency, state transitions. Covers API endpoints, UI components, database operations, and async. Verifies tests actually catch bugs by breaking the code.
 

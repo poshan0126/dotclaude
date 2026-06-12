@@ -183,7 +183,7 @@
     {
       "name": "ship",
       "source": "./plugins/ship",
-      "description": "Commit, push, create PR with confirmation at every step. Blocks secrets and force-push.",
+      "description": "Commit, push, create PR with confirmation at every step, then optional cleanup of branches whose remotes are gone. Blocks secrets and force-push.",
       "author": {
         "name": "poshan0126"
       },
@@ -251,7 +251,7 @@
     {
       "name": "refactor",
       "source": "./plugins/refactor",
-      "description": "Safely refactor with tests as a safety net. Writes tests first if none exist.",
+      "description": "Safely refactor with tests as a safety net. Writes tests first if none exist. Use --diff to simplify just the working diff before committing.",
       "author": {
         "name": "poshan0126"
       },
