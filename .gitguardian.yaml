@@ -1,0 +1,7 @@
+# hooks/tests/fixtures/ contains DELIBERATELY FAKE credentials: they are the
+# attack samples that prove hooks/scan-secrets.sh blocks secrets. Nothing in
+# there is, or ever was, a real credential.
+version: 2
+secret:
+  ignored_paths:
+    - "hooks/tests/fixtures/**"

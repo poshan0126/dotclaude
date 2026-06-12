@@ -93,6 +93,8 @@ If you add or rename a skill or agent:
 
 Every new or modified hook script MUST ship with fixtures under `hooks/tests/fixtures/<hook-name>/`. Each fixture is a JSON file specifying the stdin payload Claude Code would deliver, the expected exit code (0 allow, 2 block), and any substrings that must or must not appear in stdout. Cover at minimum: (a) one allow case, (b) one block case, and (c) every adversarial input class the hook's regexes touch (quoted paths, shell expansions, multi-statement SQL, combined flags, case variants, redirection edge cases). PRs that add or change a hook without corresponding fixtures will be rejected. Run `bash hooks/tests/run-all.sh` locally and ensure it passes before opening a PR. CI (`.github/workflows/ci.yml`) runs the same suite on Linux and macOS for every PR, plus `claude plugin validate . --strict`.
 
+Fixtures for secret-detection hooks necessarily contain fake credentials, which trips external secret scanners (GitGuardian etc.). Make every fake unambiguous — alphabet tokens, `fake_password_for_tests`, `localhost` hosts — and keep fixture paths listed in `.gitguardian.yaml` so scanners skip them. Never paste a real credential into a fixture, even a revoked one.
+
 ### Update READMEs
 
 If you add a new file to `rules/`, `skills/`, `agents/`, or `hooks/`, add a description to the README in that folder. Keep it to two or three lines.
