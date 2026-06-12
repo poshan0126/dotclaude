@@ -1,0 +1,1 @@
+{"name":"env var reference not flagged","stdin":{"tool_name":"Write","tool_input":{"file_path":"src/cfg.js","content":"const apiKey = process.env.API_KEY"}},"expect_exit":0}

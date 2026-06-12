@@ -1,0 +1,6 @@
+{
+  "name": "source file with no matching test exits silently (run from repo root)",
+  "stdin": { "tool_input": { "file_path": "hooks/notify.sh" } },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["auto-test", "failures"]
+}

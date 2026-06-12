@@ -1,0 +1,6 @@
+{
+  "name": "write into __pycache__ blocked",
+  "stdin": { "tool_input": { "file_path": "app/__pycache__/mod.cpython-312.pyc" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["permissionDecision"]
+}

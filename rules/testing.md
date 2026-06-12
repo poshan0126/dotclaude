@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Testing
 
 - Verify behavior, not implementation. Don't assert mock call counts when output values would do.

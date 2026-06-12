@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "claude-md",
+  "version": "1.0.0",
+  "description": "Keep CLAUDE.md current and lean: capture session learnings into it (default) or audit it for stale commands, drift, and bloat.",
+  "author": {
+    "name": "poshan0126"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "claude-md",
+    "memory",
+    "maintenance"
+  ]
+}

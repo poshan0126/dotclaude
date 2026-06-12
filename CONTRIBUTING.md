@@ -22,7 +22,7 @@ Thanks for wanting to make this better. This project aims to be the standard `.c
 - Project scaffolding skills. This repo is for daily work, not project creation.
 - Vendor-specific configurations (specific CI providers, cloud platforms, etc.)
 
-> Plugin packaging is welcome. Dotclaude itself ships as a marketplace (see the main README). Improvements to `marketplace.json`, the per-plugin `plugin.json` files, or `scripts/sync-plugins.sh` count as documentation improvements.
+> Plugin packaging is welcome. Dotclaude itself ships as a marketplace (see the main README). Improvements to `.claude-plugin/marketplace.json` or `hooks/hooks.json` count as documentation improvements.
 
 ## PR rules
 
@@ -34,15 +34,15 @@ Each PR should do exactly one thing. Don't bundle a new skill with a rule fix an
 
 | File type | Must have | Must NOT have |
 |---|---|---|
-| **Rules** (`.md` in `rules/`) | `alwaysApply: true` or `paths:` frontmatter | Language-specific conventions Claude already knows |
+| **Rules** (`.md` in `rules/`) | `paths:` frontmatter for scoped rules; no frontmatter for always-loaded | Language-specific conventions Claude already knows |
 | **Skills** (`SKILL.md`) | `name`, `description` in frontmatter | Hardcoded package names, model assignments |
-| **Agents** (`.md` in `agents/`) | `name`, `description`, `tools` in frontmatter | `model` field (users choose their own model) |
+| **Agents** (`agents/<name>/<name>.md`) | `name`, `description` (delegation trigger: "Use after/when..."), `tools` in frontmatter | `model` field (users choose their own model) |
 | **Hooks** (`.sh` in `hooks/`) | `jq` availability check, proper exit codes (0 = allow, 2 = block) | Hardcoded paths, missing `#!/bin/bash` |
 
 ### Naming
 
 - Skill directories: `kebab-case`. `debug-fix/`, `test-writer/`.
-- Agent files: `kebab-case.md`. `code-reviewer.md`, `security-reviewer.md`.
+- Agent files: one dir per agent, `agents/<kebab-case>/<kebab-case>.md`. `agents/code-reviewer/code-reviewer.md`.
 - Rule files: `kebab-case.md`. `code-quality.md`, `frontend.md`.
 - Hook scripts: `kebab-case.sh`. `protect-files.sh`, `block-dangerous-commands.sh`.
 
@@ -67,7 +67,9 @@ This is a template. Keep it framework-agnostic.
 
 ### Token consciousness
 
-Every line in a rule costs tokens every session. Every line in a skill costs tokens when invoked. Before adding content, ask: would removing this cause Claude to make mistakes? If no, don't add it.
+Every line in a rule costs tokens every session. Every line in a skill costs tokens when invoked, and every skill's frontmatter `description` costs tokens in the per-session skill listing — keep descriptions under ~200 characters. Before adding content, ask: would removing this cause Claude to make mistakes? If no, don't add it.
+
+CI enforces this: the `token-budget` job fails any PR that pushes always-loaded content (`CLAUDE.template.md` + rules without `paths:`) past ~1200 estimated tokens.
 
 ### Hook scripts must be safe
 
@@ -78,17 +80,18 @@ Every line in a rule costs tokens every session. Every line in a skill costs tok
 
 ### Plugin marketplace consistency
 
-If you add or rename a skill or agent, also:
+The top-level `agents/`, `skills/`, `rules/`, and `hooks/` directories are the single source of truth. Each `plugins/<name>/` dir contains only a `.claude-plugin/plugin.json` plus **relative symlinks** into the top-level dirs — Claude Code dereferences them at install time, so there are no copies to keep in sync. Never place real component files inside `plugins/`, and never use `"./"` as a plugin source (the repo root as plugin root makes default discovery load everything into every plugin).
 
-- Add or update its entry in `.claude-plugin/marketplace.json`.
-- Add or update its `plugins/<name>/.claude-plugin/plugin.json`.
-- Run `scripts/sync-plugins.sh` to mirror the file into `plugins/<name>/` and (if it's a skill) into `plugins/setupdotclaude/template/`.
+If you add or rename a skill or agent:
 
-The sync script is the source of truth. Don't hand-edit files inside `plugins/` or `plugins/setupdotclaude/template/`. They will be overwritten on the next sync.
+- Add or update its entry in `.claude-plugin/marketplace.json` (include `description`, `category`, and `keywords`; do NOT add a `version` there — versions live only in `plugin.json`).
+- Bump the `version` in `plugins/<name>/.claude-plugin/plugin.json` whenever the plugin's components change.
+- Create `plugins/<name>/` with a matching `plugin.json` and a directory symlink: `ln -s ../../agents/<name> plugins/<name>/agents` for an agent, or `ln -s ../../../skills/<name> plugins/<name>/skills/<name>` for a skill. Always symlink directories, never individual `.md` files — the component scanner skips file symlinks.
+- Run `claude plugin validate . --strict` and make sure it passes. CI runs the same check on every PR.
 
 ### Hooks require tests
 
-Every new or modified hook script MUST ship with fixtures under `hooks/tests/fixtures/<hook-name>/`. Each fixture is a JSON file specifying the stdin payload Claude Code would deliver, the expected exit code (0 allow, 2 block), and any substrings that must or must not appear in stdout. Cover at minimum: (a) one allow case, (b) one block case, and (c) every adversarial input class the hook's regexes touch (quoted paths, shell expansions, multi-statement SQL, combined flags, case variants, redirection edge cases). PRs that add or change a hook without corresponding fixtures will be rejected. Run `bash hooks/tests/run-all.sh` locally and ensure it passes before opening a PR. CI (`.github/workflows/hook-tests.yml`) runs the same suite on Linux and macOS for every PR touching `hooks/`.
+Every new or modified hook script MUST ship with fixtures under `hooks/tests/fixtures/<hook-name>/`. Each fixture is a JSON file specifying the stdin payload Claude Code would deliver, the expected exit code (0 allow, 2 block), and any substrings that must or must not appear in stdout. Cover at minimum: (a) one allow case, (b) one block case, and (c) every adversarial input class the hook's regexes touch (quoted paths, shell expansions, multi-statement SQL, combined flags, case variants, redirection edge cases). PRs that add or change a hook without corresponding fixtures will be rejected. Run `bash hooks/tests/run-all.sh` locally and ensure it passes before opening a PR. CI (`.github/workflows/ci.yml`) runs the same suite on Linux and macOS for every PR, plus `claude plugin validate . --strict`.
 
 ### Update READMEs
 
@@ -103,7 +106,7 @@ If your change adds or removes a file, update the structure tree in `README.md` 
 1. Fork the repo.
 2. Create a branch: `feat/your-skill-name` or `fix/hook-bug-description`.
 3. Make your changes.
-4. Test: verify YAML frontmatter is valid, hook scripts work with sample input, no duplication with existing files. Run `scripts/sync-plugins.sh` if you touched anything in `agents/` or `skills/`.
+4. Test: run `bash hooks/tests/run-all.sh` and `claude plugin validate . --strict`. Verify YAML frontmatter is valid, hook scripts work with sample input, and there's no duplication with existing files.
 5. Open a PR with:
    - **Title**: what you added or changed (under 72 chars)
    - **Body**: why it's useful, what daily workflow it improves

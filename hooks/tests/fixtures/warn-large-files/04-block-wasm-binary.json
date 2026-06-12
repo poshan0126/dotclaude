@@ -1,0 +1,6 @@
+{
+  "name": "binary .wasm file blocked",
+  "stdin": { "tool_input": { "file_path": "src/engine.wasm" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["binary"]
+}

@@ -1,8 +1,17 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "refactor",
-  "description": "Safely refactor with tests as a safety net. Writes tests first if none exist.",
-  "author": { "name": "poshan0126" },
+  "version": "2.1.0",
+  "description": "Safely refactor with tests as a safety net. Writes tests first if none exist. Use --diff to simplify just the working diff before committing.",
+  "author": {
+    "name": "poshan0126"
+  },
   "license": "MIT",
   "homepage": "https://github.com/poshan0126/dotclaude",
-  "repository": "https://github.com/poshan0126/dotclaude"
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "refactoring",
+    "tests",
+    "safety-net"
+  ]
 }

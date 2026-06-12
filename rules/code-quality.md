@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Code Quality
 
 ## Anti-defaults (counter common Claude tendencies)

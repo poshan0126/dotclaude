@@ -1,286 +1,154 @@
 ---
 name: setupdotclaude
-description: Set up dotclaude in any project end-to-end. Bootstrap `.claude/` from the bundled template if missing, then customize every config file to match the project's actual tech stack, conventions, and patterns.
+description: Set up dotclaude in any project. Deep-scans the codebase, interviews the user, installs only justified components, customized to the stack.
 argument-hint: "[optional: focus area like 'frontend' or 'backend']"
 disable-model-invocation: true
 ---
 
-Set up dotclaude in this project end-to-end. If `.claude/` doesn't exist yet, bootstrap it from the template bundled inside this plugin; then customize every config file to match the actual tech stack, conventions, and patterns in use. Confirm with the user before each change using AskUserQuestion.
+Set up dotclaude in this project with one governing principle: **install nothing without evidence and consent.** Every rule, hook, agent, and skill must be justified by something found in the codebase or explicitly requested by the user. When in doubt, leave it out — the user can always add more later; unused config costs tokens and trust forever.
 
 `CLAUDE.md` must be at the project root (`./CLAUDE.md`), NOT inside `.claude/`. All other config files live inside `.claude/`.
 
-If the project is empty or has no source code yet, bootstrap defaults but tell the user the customization passes will be skipped until they add code.
+Two modes, decided by what exists:
+- **Fresh**: no `.claude/` content yet (whether the user will install from this plugin or has nothing at all).
+- **Existing**: `.claude/` already has settings, rules, skills, agents, or hooks (from a clone+copy, an earlier run, or hand-rolled). Same scan and interview, but Phase 4 becomes a gap analysis: add what's missing and justified, propose removing what's unjustified, never touch user-customized content without showing the change first.
 
-## Phase Init: Bootstrap .claude/ if missing
+If `$ARGUMENTS` names a focus area (e.g. `frontend`), weight the scan and the proposals toward it.
 
-Decide whether to bootstrap by checking for `.claude/settings.json`:
+## Phase 1: Deep scan (read-only — no writes of any kind in this phase)
 
-- If it exists: the user has already populated `.claude/` (likely via the clone+copy flow). Skip this phase entirely and go to Phase 0.
-- If it does NOT exist: bootstrap from the bundled template.
+Build an evidence table. Don't stop at manifests; read real code.
 
-When bootstrapping:
+1. **Stack**: manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Gemfile`, `composer.json`, `build.gradle`, `pom.xml`, `Makefile`, `Dockerfile`) and CI workflows (`.github/workflows/`, `.gitlab-ci.yml`). Record the *actual* build/test/lint/dev commands and script names, not guesses.
+2. **Monorepo**: `workspaces` key, `pnpm-workspace.yaml`, `lerna.json`, `nx.json`, `turbo.json`, or multiple manifests at depth 2+. List the packages.
+3. **Source layout**: list the real source directories (`src/`, `app/`, `lib/`, `packages/*/src`, `cmd/`, `internal/`, ...). These become rule `paths:` globs later — record actual paths, never assume `src/`.
+4. **Tests**: config files (`jest.config.*`, `vitest.config.*`, `pytest.ini`, `conftest.py`, `playwright.config.*`, ...), then **open 2-3 real test files**: runner, naming convention (`*.test.ts` vs `test_*.py`), test directory layout, assertion style, how much mocking they actually do.
+5. **Frontend**: `.tsx`/`.jsx`/`.vue`/`.svelte` files, component directories, framework and styling approach from dependencies.
+6. **Backend/API**: route/controller/handler/service directories; ORM and migration dirs (`prisma/`, `alembic/`, `migrations/`, `db/migrate/`, ...).
+7. **Docs**: a `docs/` directory or substantial `.md` files beyond the README.
+8. **Formatter/linter**: configs AND binaries (Biome, Prettier, Ruff, Black, rustfmt, gofmt, ESLint).
+9. **Git**: default branch (`git symbolic-ref refs/remotes/origin/HEAD`), commit message style (`git log --oneline -20`), whether PRs/`gh` are part of the workflow (remote on GitHub, `gh` installed).
+10. **Read 5-10 representative source files** across the main directories: naming style (camelCase vs snake_case), error-handling patterns (typed errors vs bare catch), comment density, generated-file markers (`*.gen.ts`, `*_pb2.py`, `// Code generated`).
+11. **Existing AI/editor config**: `./CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.github/copilot-instructions.md`, current `.claude/*`. This is content to *migrate*, never to clobber.
+12. **Domain**: skim the README for domain terms, abbreviations, and architecture statements that aren't obvious from code.
 
-1. Use AskUserQuestion: "This project has no `.claude/` set up yet. Bootstrap it from the dotclaude template bundled in this plugin?" Options: `yes` / `no`.
+If the project is empty (no source files, no manifests): say so, offer only the minimal baseline (`CLAUDE.md` template + safety hooks + settings), and stop after installing it. "Re-run after adding code to customize."
 
-2. If the user says **no**, stop with: "setupdotclaude needs dotclaude's content to operate. Either clone https://github.com/poshan0126/dotclaude and copy the files in, or re-run and choose `yes` to use the bundled template."
+## Phase 2: Interview
 
-3. If the user says **yes**, run these Bash commands to copy the bundled template (Claude Code sets `$CLAUDE_PLUGIN_ROOT` to this plugin's installation directory):
+Use AskUserQuestion (batch up to 4 questions per call; use `multiSelect` where choices aren't exclusive). Two rounds — enough to capture intent, not an interrogation.
 
-   ```bash
-   mkdir -p .claude
-   cp    "$CLAUDE_PLUGIN_ROOT/template/settings.json"          .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/rules"                  .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/skills"                 .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/agents"                 .claude/
-   cp -r "$CLAUDE_PLUGIN_ROOT/template/hooks"                  .claude/
-   chmod +x .claude/hooks/*.sh
-   ```
+**Round 1 — confirm reality.** First present a compact findings summary in text (stack, package manager, test runner, formatter, layout, git workflow, anything ambiguous). Then ask:
+- "Did I read the project right?" — options: correct / mostly (I'll correct via Other) / wrong, let me describe it.
+- If monorepo: "Which packages should this setup focus on?" (multiSelect of detected packages).
+- "Anything the scan can't see?" — options like: generated dirs I must never touch / unusual deploy or branch constraints / domain terms worth recording / nothing special. Fold answers into the evidence table.
 
-   Then handle the project-root files (don't clobber existing `CLAUDE.md`):
+**Round 2 — scope and taste.**
+- "Setup size?"
+  - **Minimal**: `CLAUDE.md` + `settings.json` + the four safety hooks + `code-quality.md`. (Recommended for small projects or skeptics.)
+  - **Standard** (recommended): Minimal + every component the evidence justifies (see Phase 3 mapping) — and nothing else.
+  - **Full kit**: everything dotclaude ships, trimmed only where clearly inapplicable.
+  - **Let me pick**: walk through each component group.
+- "Which workflow skills do you want?" (multiSelect). Offer only the justified ones: `ship`/`pr-review` need a git/PR workflow, `fix-issue` needs a GitHub remote with `gh`, `tdd`/`test-writer` need a working test runner, `catchup`/`claude-md`/`debug-fix`/`explain`/`refactor`/`context-budget` are universal. Preselect per evidence; let the user drop any.
+- "Optional hooks?" (multiSelect):
+  - `format-on-save` — only offer if a formatter was detected.
+  - `auto-test` — warn plainly: runs the matching test file after **every** edit; only sensible with a fast suite.
+  - `notify` — OS notification when Claude needs attention. Personal taste.
+  - `session-start` — injects branch + dirty state, ~5-10 tokens/session. Cheap, default on.
+  - The four safety hooks (`protect-files`, `scan-secrets`, `block-dangerous-commands`, `warn-large-files`) are default-on in every size; only "Let me pick" can drop them.
 
-   ```bash
-   [ -f ./CLAUDE.md ]                  || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.md" ./
-   [ -f ./CLAUDE.local.md.example ]    || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.local.md.example" ./
-   ```
+## Phase 3: Install plan — the manifest
 
-   Then ensure `CLAUDE.local.md` is gitignored:
+Produce a single plan table before touching anything. For every dotclaude component: **Install? | Evidence | Cost class** (always-loaded / path-scoped / invoked-only / hook—no context cost). Then a short "Not installing" list, each with a one-line reason. The plan is the contract: Phase 4 applies exactly this, nothing more.
 
-   ```bash
-   touch .gitignore
-   grep -qxF 'CLAUDE.local.md' .gitignore || echo 'CLAUDE.local.md' >> .gitignore
-   ```
+Hard mapping rules (no exceptions without the user overriding):
 
-4. Tell the user what was placed and continue to Phase 0.
+| Component | Installs only if |
+|---|---|
+| `rules/frontend.md`, `agents/frontend-designer/` | Frontend files exist (Phase 1.5) |
+| `rules/database.md` | Migrations or ORM detected (1.6), `paths:` rewritten to the real migration dirs |
+| `rules/security.md`, `rules/error-handling.md` | Backend/API surfaces exist (1.6), `paths:` rewritten to the real dirs (with monorepo prefixes) |
+| `rules/testing.md` | A test suite actually exists |
+| `agents/doc-reviewer/` | Docs exist (1.7) |
+| `agents/code-reviewer/`, `agents/silent-failure-hunter/`, `agents/security-reviewer/`, `agents/performance-reviewer/` | Standard size and up |
+| `agents/pr-test-analyzer/` | A test suite actually exists (1.4), Standard size and up |
+| `hooks/format-on-save.sh` | Formatter detected AND selected |
+| `hooks/auto-test.sh` | Test runner detected AND explicitly selected |
+| `hooks/notify.sh`, `hooks/session-start.sh` | Selected in Round 2 |
+| Skills | Selected in Round 2 (only justified ones were offered) |
+| `skills/setupdotclaude` itself | Skip when running from the plugin (`$CLAUDE_PLUGIN_ROOT` set) — re-runs come from the plugin. Offer only in the clone flow. |
 
-If `$CLAUDE_PLUGIN_ROOT` is unset (rare, only when this skill is run from a non-plugin location like a direct clone), tell the user to either re-install via the marketplace or follow the manual clone+copy flow at https://github.com/poshan0126/dotclaude.
+`settings.json` is never copied verbatim: its `hooks` section must wire **only the hooks being installed**, and `permissions.allow` must list **only commands that exist in this project** (real package manager, real script names; `gh` rules only if PRs are part of the workflow). Keep the `deny` rules for secrets as-is — those are universal.
 
-## Phase 0: Clean Up Non-Config Files
+Ask one final AskUserQuestion: approve the plan / adjust (loop back) / cancel. Do not proceed without approval.
 
-Before continuing, delete files and directories inside `.claude/` that come along with a clone+copy of the dotclaude repo but don't belong in a project's `.claude/`. They waste tokens at runtime or just clutter the directory. Use Bash with `rm -rf` (or `rm -f` for files). Don't error on missing entries.
+## Phase 4: Apply the plan
 
-**Files** to remove from `.claude/`:
-- `.claude/README.md` (repo README accidentally copied in)
-- `.claude/CONTRIBUTING.md` (repo contributing guide)
-- `.claude/LICENSE` (repo license)
-- `.claude/CLAUDE.md` (`CLAUDE.md` belongs at the project root, not inside `.claude/`)
-- `.claude/.gitignore` (for the dotclaude repo, not the project; the project has its own root `.gitignore`)
-- `.claude/settings.local.json.example` (example template, not used at runtime)
-- `.claude/rules/README.md`, `.claude/agents/README.md`, `.claude/hooks/README.md`, `.claude/skills/README.md` (folder descriptions for GitHub browsing only)
+**Fresh mode (plugin install).** Copy each approved file individually from `$CLAUDE_PLUGIN_ROOT/template/` (the plugin bundles the full dotclaude template there). Copying per-file keeps folder READMEs and `hooks/tests/` out automatically. Example shape:
 
-**Directories** to remove from `.claude/` (only exist when a user did a bulk `cp -r dotclaude/* .claude/`; they belong to the dotclaude repo, not to a consuming project):
-- `.claude/.claude-plugin/` (marketplace catalog, only used for plugin distribution)
-- `.claude/plugins/` (per-plugin self-contained copies, only used for plugin distribution)
-- `.claude/scripts/` (repo maintenance scripts like sync-plugins.sh)
-
-After cleanup, briefly tell the user what was removed (count of files plus directories), then continue.
-
-## Phase 1: Detect Tech Stack
-
-Scan for package manifests, config files, and folder structure to detect: language, framework, package manager, test framework, linter/formatter, architecture pattern, and source/test directories.
-
-Check: `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Gemfile`, `composer.json`, `build.gradle`, `pom.xml`, `Makefile`, `Dockerfile`.
-
-Check for monorepo indicators: `workspaces` key in package.json, `pnpm-workspace.yaml`, `lerna.json`, `nx.json`, `turbo.json`, or multiple `package.json` files at depth 2+. If a monorepo is detected, ask the user which packages/apps to focus on and customize rule path patterns to include package prefixes (e.g., `packages/api/src/**` instead of `src/**`).
-
-Detect frameworks from dependencies and config files (frontend, backend, CSS, components, ORM/DB).
-
-Detect test framework from config files (`jest.config.*`, `vitest.config.*`, `pytest.ini`, `conftest.py`, `playwright.config.*`, etc.).
-
-Detect linter/formatter from config files (`.eslintrc.*`, `.prettierrc.*`, `biome.json`, `ruff.toml`, `tsconfig.json`, `.editorconfig`, etc.).
-
-Detect folder structure pattern (feature-based, layered, monorepo, MVC) and locate source, test, API, and auth directories.
-
-Check `git log --oneline -20` for commit message style.
-
-## Phase 2: Present Findings
-
-Present a summary to the user using AskUserQuestion:
-
-```
-I scanned your project. Here's what I found:
-
-**Stack**: [language] + [framework] + [CSS] + [DB]
-**Package manager**: [npm/pnpm/yarn/bun/pip/cargo/go]
-**Test framework**: [jest/vitest/pytest/etc.]
-**Linter/Formatter**: [eslint+prettier/ruff/clippy/etc.]
-**Architecture**: [layered/feature-based/monorepo/etc.]
-**Source dirs**: [list]
-**Test dirs**: [list]
-
-Should I customize the .claude/ files based on this? (yes/no/corrections)
+```bash
+mkdir -p .claude/rules .claude/hooks .claude/agents .claude/skills
+cp "$CLAUDE_PLUGIN_ROOT/template/rules/code-quality.md" .claude/rules/
+cp "$CLAUDE_PLUGIN_ROOT/template/hooks/protect-files.sh" .claude/hooks/   # ...one cp per approved file
+cp -r "$CLAUDE_PLUGIN_ROOT/template/skills/debug-fix" .claude/skills/     # skills copy as directories
+cp -r "$CLAUDE_PLUGIN_ROOT/template/agents/code-reviewer" .claude/agents/ # agents too (one dir per agent; scanned recursively)
+chmod +x .claude/hooks/*.sh
 ```
 
-If the user provides corrections, incorporate them.
+Project-root files (never clobber):
 
-## Phase 3: Customize Each File
+```bash
+[ -f ./CLAUDE.md ]               || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.md" ./CLAUDE.md
+[ -f ./CLAUDE.local.md.example ] || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.local.md.example" ./
+touch .gitignore
+grep -qxF 'CLAUDE.local.md' .gitignore || echo 'CLAUDE.local.md' >> .gitignore
+```
 
-For each file below, propose the specific changes and ask the user to confirm before applying.
+If `$CLAUDE_PLUGIN_ROOT` is unset and there are no copied files to work with, tell the user to install via the marketplace (`/plugin install setupdotclaude@dotclaude`) or follow the clone flow at https://github.com/poshan0126/dotclaude.
 
-### 3.1 CLAUDE.md (target: under 25 non-blank lines, hard cap: 50)
+**Existing/clone mode.** The user already has files. Apply the same plan as a diff:
+- Add approved components that are missing.
+- Propose **removing** files the plan doesn't justify (the whole-kit clone brings everything): unjustified rules/agents/skills/hooks, plus repo artifacts (`.claude/README.md`, `CONTRIBUTING.md`, `LICENSE`, `.gitignore`, `CLAUDE.template.md`, `settings.local.json.example`, folder READMEs, `.claude-plugin/`, `hooks/tests/`, `plugins/`, legacy `scripts/`). Confirm before each `rm`; list, don't surprise.
+- Where a kept file differs from the shipped version, assume the user customized it: show the proposed change before applying.
 
-`CLAUDE.md` loads every turn for every developer. Aggressive trimming pays for itself fast.
+**Customize while installing** (confirm each file's changes before writing):
 
-Replace the template commands with actual commands from the detected manifest:
-- **Build**: actual build command from package.json scripts, Makefile targets, etc.
-- **Test**: actual test command plus how to run a single test file.
-- **Lint/Format**: actual lint and format commands.
-- **Dev**: actual dev server command.
-
-Strip every `> REPLACE:` block. They are template guidance, not content.
-
-For each remaining section, decide on inclusion:
+1. **CLAUDE.md** (target <25 non-blank lines, hard cap 50): replace template commands with the real ones from Phase 1.1; strip every `> REPLACE:` block. For each remaining section keep it only if the scan produced real content for it:
 
 | Section | Keep if... | Otherwise |
 |---|---|---|
-| **Architecture** | The project has at least one non-obvious structural decision (a domain split, a layering rule that contradicts the file tree). | Delete. Listing source directories is duplicative. Claude can explore. |
-| **Key Decisions** | At least one decision exists where knowing the WHY would prevent a wrong fix (`auth tokens in httpOnly cookies because XSS`). | Delete. |
-| **Domain Knowledge** | At least one term, abbreviation, or concept is non-obvious from the code. | Delete. |
-| **Workflow** | You have project-specific workflow quirks. | Delete. Generic workflow lines duplicate `rules/code-quality.md`. |
-| **Don'ts** | At least one project-specific don't (`don't modify *.gen.ts`). | Delete. Generic don'ts belong in rules. |
+| Architecture | A non-obvious structural decision surfaced (1.3/1.12) | Delete — Claude can explore |
+| Key Decisions | A WHY exists that would prevent a wrong fix | Delete |
+| Domain Knowledge | Non-obvious terms surfaced (1.12 / Round 1) | Delete |
+| Workflow | Project-specific quirks exist | Delete — generic lines duplicate `code-quality.md` |
+| Don'ts | Project-specific don'ts exist (e.g. generated dirs from Round 1) | Delete |
 
-Most projects end up with just Commands plus three to five extra lines. That's expected. A 10-line `CLAUDE.md` is healthy.
+   Most projects end up with Commands plus three to five lines. A 10-line `CLAUDE.md` is healthy.
+2. **settings.json**: generate hooks + permissions per the plan (above).
+3. **Rule `paths:`** rewritten to the directories actually found, with monorepo package prefixes when applicable.
+4. **code-quality.md naming**: change only if the sampled code (1.10) genuinely differs from the defaults.
+5. **block-dangerous-commands.sh**: update the protected-branch regex if the default branch isn't `main`/`master`.
+6. **Migrate existing AI config** (1.11): offer to fold `.cursorrules` / `AGENTS.md` / copilot-instructions content into `CLAUDE.md` or a rule. Never delete the originals without asking.
 
-### 3.2 settings.json
+## Phase 5: Verify, fingerprint, and report
 
-Update permissions to match actual commands:
-- Replace `npm run` with the actual package manager (`pnpm run`, `yarn`, `bun run`, `cargo`, `go`, `make`, `python -m pytest`, etc.)
-- Add project-specific allow rules for detected scripts
-- Keep deny rules for secrets as-is (these are universal)
+1. **CLAUDE.md budget**: count non-blank lines (`grep -cv '^[[:space:]]*$' CLAUDE.md`). Under 25 = PASS. 25-50 = WARN: list the longest sections, ask which to trim. Over 50 = FAIL: propose specific cuts and don't finish until ≤50.
+2. **Always-loaded estimate**: `CLAUDE.md` + rules without `paths:`, chars/4. Report the number; over ~1000 tokens, propose the single biggest trim.
+3. **Mechanical checks**: every hook wired in `settings.json` exists and is executable; every installed file parses (YAML frontmatter, JSON); nothing was installed beyond the approved plan; no rule duplicates what a hook already enforces.
+4. **Write the drift fingerprint** so the setup stays tuned over time. If `session-start.sh` was installed:
 
-### 3.3 rules/code-quality.md
+   ```bash
+   [ -x .claude/hooks/session-start.sh ] && DOTCLAUDE_FINGERPRINT=1 .claude/hooks/session-start.sh > .claude/.dotclaude.json
+   ```
 
-Update naming conventions ONLY if the project's existing code uses different patterns:
-- Sample 5-10 source files to detect actual naming style (camelCase vs snake_case, etc.)
-- If the project uses different file naming than the template, update
-- If the project's import style differs, update the import order section
-
-If everything matches the defaults, leave it unchanged.
-
-### 3.4 rules/testing.md
-
-Update if the detected test framework has specific idioms. Otherwise leave as-is (it's only a few lines).
-
-### 3.5 rules/security.md
-
-Update the `paths:` frontmatter to match actual project directories:
-- Replace `src/api/**` with actual API directory paths found
-- Replace `src/auth/**` with actual auth directory paths
-- Replace `src/middleware/**` with actual middleware paths
-- If none found, keep the defaults as reasonable guesses
-
-### 3.5b rules/error-handling.md
-
-Update the `paths:` frontmatter to match actual backend directories (same paths as security.md plus service/handler directories). If the project has no backend, delete this file.
-
-### 3.6 rules/frontend.md
-
-- **If no frontend files exist** (no .tsx, .jsx, .vue, .svelte, .css): delete this file entirely
-- **If frontend exists**: update the Component Framework table to highlight which options the project actually uses (detected from dependencies)
-- Update path patterns in frontmatter if the project uses non-standard directories
-
-### 3.7 hooks/format-on-save.sh
-
-Uncomment the section matching the detected formatter:
-- Prettier found: uncomment Node.js section
-- Black/isort found: uncomment Python section
-- Ruff found: uncomment Ruff section
-- Biome found: uncomment Biome section
-- rustfmt found: uncomment Rust section
-- gofmt found: uncomment Go section
-- Multiple languages: uncomment all relevant sections
-
-### 3.8 hooks/block-dangerous-commands.sh
-
-Check the default branch name (`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null` or `git remote show origin`). If it's not `main` or `master`, update the regex pattern.
-
-### 3.9 rules/database.md
-
-- Check if the project has a database (look for: migration directories, ORM config files like `prisma/schema.prisma`, `drizzle.config.*`, `alembic.ini`, `knexfile.*`, `sequelize` in dependencies, `typeorm` in dependencies, `ActiveRecord` patterns, `flyway`, `liquibase`)
-- **If database/migrations detected**: keep the rule, update `paths:` frontmatter to match the actual migration directory paths found
-- **If no database detected**: delete `rules/database.md` entirely
-
-### 3.10 skills/
-
-All skills are methodology-based and project-agnostic. Leave unchanged by default.
-
-If the user wants a minimal setup, list the actual contents of `.claude/skills/` (run `ls -1 .claude/skills/`) and use AskUserQuestion to ask which (if any) directories they want to delete. Delete the ones they opt out of. Otherwise keep all.
-
-### 3.11 agents/
-
-- **frontend-designer.md**: delete if no frontend files exist
-- **doc-reviewer.md**: delete if the project has no documentation directory (no `docs/`, `doc/`, or significant `.md` files beyond README)
-- **security-reviewer.md**: keep (security applies everywhere)
-- **code-reviewer.md**: keep (universal)
-- **performance-reviewer.md**: keep (universal)
-
-## Phase 4: Review & Simplify
-
-After all changes are applied, run a thorough final review pass.
-
-### CLAUDE.md size budget (hard check)
-
-Run this Bash to count non-blank lines in `CLAUDE.md`:
-
-```bash
-grep -cv '^[[:space:]]*$' CLAUDE.md
-```
-
-Apply the budget:
-
-| Non-blank lines | Verdict | Action |
-|---|---|---|
-| Under 25 | PASS | Continue. |
-| 25 to 50 | WARN | List the longest sections by line count and ask the user via AskUserQuestion which to trim. Apply trims they confirm, then continue. |
-| Over 50 | FAIL | Block. Identify the top three biggest sections by line count and propose specific cuts. Do not continue Phase 4 until `CLAUDE.md` is at or under 50 non-blank lines. |
-
-Reasons to stay tight: every line of `CLAUDE.md` loads on every turn for every developer. A 50-line file across 50 turns/day costs roughly 1,000 tokens of always-on overhead, every day, even on a one-line bugfix.
-
-Strip any remaining `> REPLACE:` placeholder blocks. They are template guidance that should have been replaced with real content or removed during Phase 3.1.
-
-### Codebase consistency review
-
-Review the entire codebase alongside the customized `.claude/` configuration:
-- Do the rules match how the code is actually written?
-- Do the settings permissions cover the commands the project actually uses?
-- Do the security rule paths match where sensitive code actually lives?
-- Do the hook protections cover the files that actually need protecting in this project?
-- Are there project patterns, conventions, or architectural decisions not yet captured in the config?
-- Remove any redundancy introduced during customization.
-- Ensure no file contradicts another.
-- Trim any verbose instructions back to essentials.
-- Verify all YAML frontmatter is valid.
-- Verify all hook scripts referenced in settings.json exist and are executable.
-
-Present the review findings to the user. If changes are needed, confirm before applying.
-
-## Phase 5: Summary
-
-After everything is finalized, count `CLAUDE.md`'s non-blank lines once more and present a summary:
-
-```
-Setup complete. Here's what was customized:
-
-- Bootstrap: [yes, copied template into .claude/ | no, used existing .claude/]
-- CLAUDE.md: [N non-blank lines]. Verdict: [PASS under 25 / WARN 25-50 / FAIL over 50]. Customized commands for [stack].
-- settings.json: permissions updated for [package manager]
-- rules/security.md: paths updated to [actual dirs]
-- rules/frontend.md: [kept/removed]
-- hooks/format-on-save.sh: enabled [formatter]
-- [any other changes]
-
-Files left as defaults (universal, no project-specific changes needed):
-- [list]
-
-Review pass: [any issues found and fixed, or "all clean"]
-
-Tip: run `/context-budget` to see the per-turn token cost of the resulting configuration, broken down by always-loaded vs path-scoped vs invoked-only.
-```
+   This records a hash of the project's manifests. From then on, the session-start hook emits a one-line "config drift" nudge whenever the manifests change (new scripts, new framework, new package manager) — the signal to re-run this skill. Commit `.claude/.dotclaude.json` so the whole team shares the baseline. If `session-start.sh` was not installed, skip and instead tell the user to re-run `/setupdotclaude` manually after stack changes.
+5. **Summary**: three lists — installed (with the evidence that justified each), skipped (with reason), customized (what changed). Budget verdict. Close with the maintenance cadence: "Re-run `/setupdotclaude` when the drift nudge appears, after adding a framework or test runner, or after a big restructuring — it runs as a gap analysis on an existing setup, so re-runs are cheap and only propose deltas." Tip: run `/context-budget` for the full per-turn breakdown.
 
 ## Rules
 
-- NEVER write changes without user confirmation first
-- NEVER delete a file without confirming. Propose "remove" and explain why.
-- If the project is empty (no source files, no manifests), bootstrap defaults and stop. Tell the user "Project appears empty. Keeping all defaults. Re-run after adding code to customize."
-- If detection is uncertain, ASK the user rather than guessing
-- Preserve any manual edits the user has already made to .claude/ files. Only update sections that need project-specific customization.
-- Keep it minimal. If the default works, leave it alone.
+- NEVER write or delete without confirmation. Propose, show, then apply.
+- Install nothing the scan can't justify and the user didn't approve. The plan table is the contract.
+- Preserve user edits. When changing a file the user may have touched, show the diff first.
+- Uncertain detection → ask, don't guess.
+- Empty project → minimal baseline, then stop.
+- Keep it minimal. If a default works, leave it alone; if a component lacks evidence, leave it out.

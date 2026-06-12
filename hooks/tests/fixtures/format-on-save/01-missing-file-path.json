@@ -1,0 +1,6 @@
+{
+  "name": "missing file_path exits silently",
+  "stdin": { "tool_input": {} },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["error"]
+}

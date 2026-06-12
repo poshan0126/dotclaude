@@ -1,11 +1,1 @@
-{
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-
-  "permissions": {
-    "allow": [
-      "Bash(docker compose *)",
-      "Bash(kubectl *)",
-      "Bash(make *)"
-    ]
-  }
-}
+../../../settings.local.json.example

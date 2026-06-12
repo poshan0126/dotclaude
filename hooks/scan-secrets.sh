@@ -34,7 +34,7 @@ if echo "$CONTENT" | grep -qE 'AKIA[0-9A-Z]{16}'; then
 fi
 
 # AWS Secret Access Keys (40 chars base64 after a key assignment)
-if echo "$CONTENT" | grep -qiE '(aws_secret_access_key|secret_key)[[:space:]]*[=:][[:space:]]*["\x27]?[A-Za-z0-9/+=]{40}'; then
+if echo "$CONTENT" | grep -qiE '(aws_secret_access_key|secret_key)[[:space:]]*[=:][[:space:]]*["'\''"]?[A-Za-z0-9/+=]{40}'; then
   MATCHES="$MATCHES AWS secret key;"
 fi
 
@@ -43,8 +43,8 @@ if echo "$CONTENT" | grep -qE '(ghp_|gho_|ghs_|ghr_|github_pat_)[a-zA-Z0-9_]{20,
   MATCHES="$MATCHES GitHub token;"
 fi
 
-# OpenAI / Stripe / Anthropic style keys (sk-...)
-if echo "$CONTENT" | grep -qE 'sk-[a-zA-Z0-9]{20,}'; then
+# OpenAI / Stripe / Anthropic style keys (sk-..., incl. hyphenated sk-ant-api03-...)
+if echo "$CONTENT" | grep -qE 'sk-[a-zA-Z0-9-]{20,}'; then
   MATCHES="$MATCHES API key (sk-...);"
 fi
 
@@ -66,8 +66,8 @@ fi
 # Generic password/secret/token assignments with literal string values
 # Matches: password = "actual_value", SECRET_KEY: 'actual_value', api_token="actual_value"
 # Excludes: env var references like process.env.*, os.environ.*, ${...}, getenv(...)
-if echo "$CONTENT" | grep -qiE '(password|secret|token|api_key|apikey|api_secret)[[:space:]]*[=:][[:space:]]*["\x27][^"\x27]{8,}["\x27]' && \
-   ! echo "$CONTENT" | grep -qiE '(password|secret|token|api_key|apikey|api_secret)[[:space:]]*[=:][[:space:]]*["\x27]?(process\.env|os\.environ|getenv|\$\{|ENV\[|env\()'; then
+if echo "$CONTENT" | grep -qiE '(password|secret|token|api_key|apikey|api_secret)[[:space:]]*[=:][[:space:]]*["'\''"][^"'\''"]{8,}["'\''"]' && \
+   ! echo "$CONTENT" | grep -qiE '(password|secret|token|api_key|apikey|api_secret)[[:space:]]*[=:][[:space:]]*["'\''"]?(process\.env|os\.environ|getenv|\$\{|ENV\[|env\()'; then
   MATCHES="$MATCHES hardcoded credential;"
 fi
 

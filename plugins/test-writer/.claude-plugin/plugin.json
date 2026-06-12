@@ -1,8 +1,17 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "test-writer",
+  "version": "2.1.0",
   "description": "Write comprehensive tests covering happy/edge/error/concurrency paths. Verifies tests actually catch bugs.",
-  "author": { "name": "poshan0126" },
+  "author": {
+    "name": "poshan0126"
+  },
   "license": "MIT",
   "homepage": "https://github.com/poshan0126/dotclaude",
-  "repository": "https://github.com/poshan0126/dotclaude"
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "tests",
+    "coverage",
+    "edge-cases"
+  ]
 }

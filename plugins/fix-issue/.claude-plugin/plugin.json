@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "fix-issue",
+  "version": "1.0.0",
+  "description": "Take a GitHub issue from number to tested fix: read the thread, reproduce, fix with a regression test, prep a PR that closes it.",
+  "author": {
+    "name": "poshan0126"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "github",
+    "issues",
+    "bugfix"
+  ]
+}

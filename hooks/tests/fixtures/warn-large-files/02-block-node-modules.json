@@ -1,0 +1,6 @@
+{
+  "name": "write into node_modules blocked",
+  "stdin": { "tool_input": { "file_path": "node_modules/lodash/index.js" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["permissionDecision", "node_modules"]
+}

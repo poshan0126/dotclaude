@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  hook-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install jq (macOS)
+        if: runner.os == 'macOS'
+        run: brew install jq || true
+      - name: Install jq (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -y && sudo apt-get install -y jq
+      - name: Run hook fixtures
+        run: bash hooks/tests/run-all.sh
+
+  token-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Always-loaded content under 1200-token budget (chars/4)
+        run: |
+          total=0
+          files="CLAUDE.template.md"
+          for f in rules/*.md; do
+            [ "$(basename "$f")" = "README.md" ] && continue
+            grep -q '^paths:' "$f" || files="$files $f"
+          done
+          for f in $files; do
+            chars=$(wc -c < "$f")
+            tok=$((chars / 4))
+            echo "  $f: ~${tok} tokens"
+            total=$((total + tok))
+          done
+          echo "Always-loaded estimate: ~${total} tokens (budget: 1200)"
+          if [ "$total" -gt 1200 ]; then
+            echo "::error::Always-loaded content (~${total} tok) exceeds the 1200-token budget. Trim CLAUDE.template.md or move rule content into a path-scoped rule."
+            exit 1
+          fi
+      - name: Reviewer agents share the house contract
+        run: |
+          # Reviewer boilerplate is intentionally duplicated (agents run isolated and
+          # can't see shared rules), so guard the invariants against drift instead.
+          for a in agents/code-reviewer/code-reviewer.md agents/security-reviewer/security-reviewer.md agents/performance-reviewer/performance-reviewer.md agents/doc-reviewer/doc-reviewer.md agents/silent-failure-hunter/silent-failure-hunter.md agents/pr-test-analyzer/pr-test-analyzer.md; do
+            grep -q '80' "$a" || { echo "::error::$a lost the 80% confidence threshold"; exit 1; }
+            grep -q '^## Operating principles' "$a" || { echo "::error::$a missing Operating principles section"; exit 1; }
+            grep -q '^## Output format' "$a" || { echo "::error::$a missing Output format section"; exit 1; }
+            grep -q '^## What NOT to flag' "$a" || { echo "::error::$a missing What NOT to flag section"; exit 1; }
+          done
+          echo "All 6 reviewer agents carry the house contract."
+
+  validate-plugins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validate marketplace manifest (strict)
+        run: claude plugin validate . --strict
+      - name: Validate each plugin (strict)
+        run: |
+          for d in plugins/*/; do
+            echo "== $d"
+            claude plugin validate "$d" --strict
+          done

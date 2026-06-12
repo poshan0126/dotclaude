@@ -1,0 +1,1 @@
+{"name":"hyphenated sk-ant-api03 key blocked","stdin":{"tool_name":"Write","tool_input":{"file_path":"a.js","content":"const k=\"sk-ant-api03-AAAABBBBCCCCDDDDEEEEFFFFGGGG\""}},"expect_exit":2,"expect_stdout_contains":["sk-..."]}

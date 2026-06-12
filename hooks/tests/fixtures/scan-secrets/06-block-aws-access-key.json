@@ -1,0 +1,1 @@
+{"name":"AWS access key id blocked","stdin":{"tool_name":"Write","tool_input":{"file_path":"a.js","content":"AKIAIOSFODNN7EXAMPLE"}},"expect_exit":2,"expect_stdout_contains":["AWS access key"]}

@@ -1,0 +1,6 @@
+{
+  "name": "verbose mode exits 0",
+  "stdin": {},
+  "env": { "DOTCLAUDE_SESSION_VERBOSE": "1" },
+  "expect_exit": 0
+}

@@ -1,0 +1,6 @@
+{
+  "name": "editing a test file does not re-run tests (run from repo root)",
+  "stdin": { "tool_input": { "file_path": "hooks/tests/fixtures/auto-test/test_sample.py" } },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["auto-test"]
+}

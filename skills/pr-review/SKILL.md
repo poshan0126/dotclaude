@@ -1,8 +1,15 @@
 ---
 name: pr-review
-description: Review code changes or a pull request. Delegates to specialist agents for code quality, security, performance, and documentation, in parallel.
+description: Review code changes or a pull request. Delegates to specialist agents (code quality, security, performance, silent failures, test quality, docs) in parallel.
 argument-hint: "[PR number | staged | file path | omit to auto-detect]"
 disable-model-invocation: true
+allowed-tools:
+  - Bash(git diff *)
+  - Bash(git log *)
+  - Bash(gh pr view *)
+  - Bash(gh pr diff *)
+  - Bash(gh pr checks *)
+  - Bash(gh api *)
 ---
 
 Review code changes by delegating to specialist agents in parallel and synthesizing a unified report. Works with PRs, staged changes, or specific files.
@@ -52,11 +59,20 @@ Decide which reviewers apply by reading the diff content, not just file paths:
 | Reviewer | When to include |
 |---|---|
 | `code-reviewer` | Always. Universal correctness pass. |
+| `silent-failure-hunter` | Any diff touching error handling, catch blocks, fallbacks, retries, or async flows. In practice: almost every code diff. Skip only for pure-docs, config-only, or static-asset diffs. |
+| `pr-test-analyzer` | Tests were added or changed, OR behavior changed without any test change (that absence is itself the finding). Skip for pure-docs or config diffs. |
 | `security-reviewer` | Auth, input handling, queries, tokens, session management, file path construction, SQL or HTML or template strings. |
 | `performance-reviewer` | Endpoints, DB queries, loops over collections, caching, connection management. Skip for pure-docs, config-only, or static-asset diffs. |
 | `doc-reviewer` | `.md` changes, significant docstring or JSDoc changes, API docs. |
 
-**Dispatch all applicable reviewers in PARALLEL.** Send one message that contains one `Task` tool call per applicable reviewer (use `subagent_type` matching the reviewer name). Do NOT invoke them sequentially. Parallel dispatch cuts wall-clock time from N times the slowest review to roughly the slowest single review, with no extra token cost.
+**Dispatch all applicable reviewers in PARALLEL.** Send one message that contains one Agent/Task tool call per applicable reviewer. Do NOT invoke them sequentially. Parallel dispatch cuts wall-clock time from N times the slowest review to roughly the slowest single review, with no extra token cost. Each call looks like:
+
+```
+Agent(subagent_type: "code-reviewer",
+      prompt: "Review <scope>. <verbose?> Output one confidence score (0-100) per finding.")
+```
+
+Ask every reviewer to attach a confidence score per finding — Step 4 uses them.
 
 If only one reviewer applies (a pure-docs diff, for example), a single `Task` call is fine. Skip the parallel pattern when there's nothing to parallelize.
 
@@ -143,4 +159,9 @@ For non-PR reviews (staged or file):
 - [areas with no issues]
 ```
 
-Either way: deduplicate findings that overlap between agents. Attribute each finding to the agent that found it.
+### Merging, confidence, and deconfliction (both templates)
+
+- **Deduplicate** findings that overlap between agents; attribute the merged finding to the agent with the most specific evidence.
+- **Confidence buckets**: 90-100 → report as findings to act on; 80-89 → report under a `Consider` subheading; anything an agent shipped below 80 shouldn't exist — drop it.
+- **Deconfliction**: when two agents flag the same lines with different fixes, prefer the more specific domain — security-reviewer over code-reviewer on input handling; performance-reviewer over code-reviewer on complexity *if the path is hot*, code-reviewer otherwise; silent-failure-hunter over code-reviewer on error handling. Never present two conflicting fixes for the same lines without saying which to apply.
+- Attribute each finding to the agent that found it.

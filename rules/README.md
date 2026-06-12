@@ -1,21 +1,21 @@
 # Rules
 
-Rules are modular instruction files that Claude loads automatically. They extend `CLAUDE.md` without bloating it.
+Rules are modular instruction files that Claude Code loads automatically from `.claude/rules/`. They extend `CLAUDE.md` without bloating it.
 
-- `alwaysApply: true`. Loaded every session, regardless of what files are open. Costs tokens every turn, so keep it tight.
-- `paths: [...]`. Loaded only when working with files matching the glob patterns. Free until you're near matched files.
+- **No `paths:` frontmatter**. Loaded every session, like `CLAUDE.md`. Costs tokens every turn, so keep it tight.
+- **`paths: [...]` frontmatter**. Loaded only when working with files matching the glob patterns. Free until you're near matched files.
 
-Budget convention for `alwaysApply` rules: under 30 lines each. Push everything that doesn't actively change Claude's behavior into a path-scoped rule, into an agent, or out entirely.
+Budget convention for always-loaded rules: under 30 lines each. Push everything that doesn't actively change Claude's behavior into a path-scoped rule, into an agent, or out entirely.
 
 ## Available rules
 
 ### code-quality.md
-**Scope**: Always. ~22 lines.
+**Scope**: Always. ~28 lines.
 
 Anti-defaults that counter common Claude tendencies (no premature abstraction, no scope expansion, no surrounding refactors, WHY-not-WHAT comments). Plus naming conventions, code markers (TODO, FIXME, HACK, NOTE), and file organization.
 
 ### testing.md
-**Scope**: Always. ~10 lines.
+**Scope**: Always. ~7 lines.
 
 Six terse principles: verify behavior, run the specific test file, fix or delete flaky tests, prefer real implementations, one assertion per test, no empty assertions. Comprehensive test writing is handled by the `test-writer` skill.
 
@@ -34,16 +34,6 @@ Loads near backend code. Typed error classes, no swallowing, no floating promise
 
 Loads near migrations. Never modify existing migrations, reversibility, test both directions, no raw SQL when an ORM method exists, never seed production data in migrations.
 
-### database.md
-**Scope**: Path-scoped (migration directories. `**/migrations/**`, `**/prisma/**`, `**/alembic/**`, etc.)
-
-Loads when touching schema and migration files. Covers migration safety (reversibility, backward compatibility for one deploy cycle, NOT NULL with backfill, index creation strategy), transaction boundaries, destructive-statement guardrails, and foreign-key discipline.
-
-### error-handling.md
-**Scope**: Path-scoped (backend surfaces. Handlers, controllers, services, workers)
-
-Loads when touching server code. Covers error shape consistency, never-swallow rules, retry/backoff policies, fail-open vs fail-closed semantics, timeout discipline, and the difference between expected failures (validation) and unexpected failures (bugs. Propagate).
-
 ### frontend.md
 **Scope**: Path-scoped (`**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`, `**/*.css`, `**/*.scss`, `**/*.html`, `**/components/**`, `**/pages/**`, etc.)
 
@@ -51,19 +41,15 @@ Loads when touching frontend files. Design token requirements, design principle 
 
 ## Adding your own
 
-Create a new `.md` file in this directory:
+Create a new `.md` file in this directory. With no frontmatter it loads every session:
 
-```yaml
----
-alwaysApply: true
----
-
+```markdown
 # Your Rule Name
 
 - Your instructions here
 ```
 
-Or path-scoped:
+Or path-scoped, so it only loads when Claude touches matching files:
 
 ```yaml
 ---

@@ -1,0 +1,6 @@
+{
+  "name": "write into nested dist/ blocked",
+  "stdin": { "tool_input": { "file_path": "packages/app/dist/bundle.js" } },
+  "expect_exit": 2,
+  "expect_stdout_contains": ["build output"]
+}

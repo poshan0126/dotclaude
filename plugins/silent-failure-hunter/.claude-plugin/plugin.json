@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "silent-failure-hunter",
+  "version": "1.0.0",
+  "description": "Finds code that fails silently: swallowed errors, failures masked as success, fallbacks that hide breakage. Runs on every PR review.",
+  "author": {
+    "name": "poshan0126"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "error-handling",
+    "silent-failures",
+    "review"
+  ]
+}
