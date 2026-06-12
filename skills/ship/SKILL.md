@@ -14,6 +14,8 @@ allowed-tools:
   - Bash(git branch *)
   - Bash(gh pr create *)
   - Bash(gh pr view *)
+  - Bash(git fetch *)
+  - Bash(git for-each-ref *)
 ---
 
 Ship the current changes through commit, push, and PR creation. Confirm with the user before each step using the AskUserQuestion tool.
@@ -61,6 +63,15 @@ Ship the current changes through commit, push, and PR creation. Confirm with the
 - **ASK the user to confirm or edit** the title and body
 - Only after confirmation: create the PR with `gh pr create`
 - Show the PR URL when done
+
+## Step 5: Branch cleanup (optional)
+
+After the PR is created (or if invoked when everything is already shipped), offer to clean up stale local branches:
+
+- `git fetch --prune`, then find branches whose upstream is gone:
+  `git for-each-ref --format '%(refname:short) %(upstream:track)' refs/heads | grep '\[gone\]'`
+- Show the list and **ASK before deleting**. Delete with `git branch -d` only.
+- If a branch isn't fully merged (`-d` refuses), list it separately — deleting unmerged branches needs the user to explicitly say so, every time.
 
 ## Rules
 

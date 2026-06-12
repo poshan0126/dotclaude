@@ -95,6 +95,40 @@
       ]
     },
     {
+      "name": "silent-failure-hunter",
+      "source": "./plugins/silent-failure-hunter",
+      "description": "Finds code that fails silently: swallowed errors, failures masked as success, fallbacks that hide breakage. Runs on every PR review.",
+      "author": {
+        "name": "poshan0126"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "code-review",
+      "keywords": [
+        "error-handling",
+        "silent-failures",
+        "review"
+      ]
+    },
+    {
+      "name": "pr-test-analyzer",
+      "source": "./plugins/pr-test-analyzer",
+      "description": "Judges whether a diff's tests actually verify the change: assertion-free tests, mock theater, tests that cannot fail, weakened tests.",
+      "author": {
+        "name": "poshan0126"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "testing",
+      "keywords": [
+        "tests",
+        "test-quality",
+        "review"
+      ]
+    },
+    {
       "name": "safety-hooks",
       "source": "./plugins/safety-hooks",
       "description": "Deterministic guardrails as PreToolUse hooks: blocks dangerous commands (force push, rm -rf, DROP TABLE), secret leaks, edits to protected files, and writes to build artifacts.",
@@ -166,7 +200,7 @@
     {
       "name": "pr-review",
       "source": "./plugins/pr-review",
-      "description": "Review PR or staged changes via specialist agents. Synthesizes a unified severity-ranked report.",
+      "description": "Review PR or staged changes via six specialist agents in parallel. Confidence-bucketed, severity-ranked synthesis.",
       "author": {
         "name": "poshan0126"
       },
@@ -263,6 +297,57 @@
         "tokens",
         "context",
         "budget"
+      ]
+    },
+    {
+      "name": "catchup",
+      "source": "./plugins/catchup",
+      "description": "Rebuild context fast after /clear: reads the handoff note and branch changes, summarizes where work stands. Add handoff to write the note before stopping.",
+      "author": {
+        "name": "poshan0126"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "productivity",
+      "keywords": [
+        "context",
+        "session",
+        "handoff"
+      ]
+    },
+    {
+      "name": "claude-md",
+      "source": "./plugins/claude-md",
+      "description": "Keep CLAUDE.md current and lean: capture session learnings into it (default) or audit it for stale commands, drift, and bloat.",
+      "author": {
+        "name": "poshan0126"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "productivity",
+      "keywords": [
+        "claude-md",
+        "memory",
+        "maintenance"
+      ]
+    },
+    {
+      "name": "fix-issue",
+      "source": "./plugins/fix-issue",
+      "description": "Take a GitHub issue from number to tested fix: read the thread, reproduce, fix with a regression test, prep a PR that closes it.",
+      "author": {
+        "name": "poshan0126"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/poshan0126/dotclaude",
+      "repository": "https://github.com/poshan0126/dotclaude",
+      "category": "workflow",
+      "keywords": [
+        "github",
+        "issues",
+        "bugfix"
       ]
     }
   ]

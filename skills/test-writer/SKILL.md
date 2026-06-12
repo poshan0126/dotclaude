@@ -1,8 +1,14 @@
 ---
 name: test-writer
-description: Write comprehensive tests for new or changed code. Use automatically when new features are added, functions are created, or behavior is modified.
+description: Write comprehensive tests for new or changed code. Use automatically after adding a function, endpoint, or component, or changing behavior, when the change has no corresponding test changes. Not for config, docs, or test-only diffs.
 # No disable-model-invocation. Claude can auto-trigger this when adding features.
 # Add "disable-model-invocation: true" below if you prefer manual-only via /test-writer.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash(git diff *)
+  - Bash(git log *)
 ---
 
 Write comprehensive tests for the code that was just added or changed.

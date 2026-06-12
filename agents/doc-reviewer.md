@@ -1,6 +1,6 @@
 ---
 name: doc-reviewer
-description: Reviews documentation for accuracy, completeness, and clarity. Cross-references docs against the actual source code.
+description: Use after .md, docstring, JSDoc, or API-doc changes — or when code changes may have invalidated existing docs. Cross-references docs against actual source: stale references, wrong signatures, missing params, broken examples.
 tools:
   - Read
   - Grep

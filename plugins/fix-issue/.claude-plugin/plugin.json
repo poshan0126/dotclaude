@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "frontend-designer",
-  "version": "2.1.0",
-  "description": "Builds production-grade UI. Tokens-first, anti-AI-slop aesthetics, design tokens enforced.",
+  "name": "fix-issue",
+  "version": "1.0.0",
+  "description": "Take a GitHub issue from number to tested fix: read the thread, reproduce, fix with a regression test, prep a PR that closes it.",
   "author": {
     "name": "poshan0126"
   },
@@ -10,9 +10,8 @@
   "homepage": "https://github.com/poshan0126/dotclaude",
   "repository": "https://github.com/poshan0126/dotclaude",
   "keywords": [
-    "frontend",
-    "ui",
-    "design-tokens",
-    "accessibility"
+    "github",
+    "issues",
+    "bugfix"
   ]
 }

@@ -1,6 +1,6 @@
 ---
 name: performance-reviewer
-description: Reviews code for performance issues like memory leaks, slow queries, unnecessary computation, bundle size, and runtime bottlenecks. Use proactively after changes to hot paths, data processing, or API endpoints.
+description: Use proactively after changes to hot paths, API endpoints, DB queries, loops over collections, or rendering code. Finds measurable bottlenecks — N+1 queries, memory leaks, blocking I/O, re-renders — not theoretical micro-optimizations.
 tools:
   - Read
   - Grep

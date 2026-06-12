@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "frontend-designer",
-  "version": "2.1.0",
-  "description": "Builds production-grade UI. Tokens-first, anti-AI-slop aesthetics, design tokens enforced.",
+  "name": "claude-md",
+  "version": "1.0.0",
+  "description": "Keep CLAUDE.md current and lean: capture session learnings into it (default) or audit it for stale commands, drift, and bloat.",
   "author": {
     "name": "poshan0126"
   },
@@ -10,9 +10,8 @@
   "homepage": "https://github.com/poshan0126/dotclaude",
   "repository": "https://github.com/poshan0126/dotclaude",
   "keywords": [
-    "frontend",
-    "ui",
-    "design-tokens",
-    "accessibility"
+    "claude-md",
+    "memory",
+    "maintenance"
   ]
 }

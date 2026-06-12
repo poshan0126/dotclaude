@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "ship",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Commit, push, create PR with confirmation at every step. Blocks secrets and force-push.",
   "author": {
     "name": "poshan0126"

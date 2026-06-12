@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Reviews code for quality, correctness, and maintainability. Use for diff review, PR review, or post-change verification.
+description: Use after any code change, before committing, or when a PR or diff needs review. Catches real bugs — off-by-ones, null derefs, logic inversions, race conditions, swallowed errors, complexity — with evidence. Skips style nitpicks.
 tools:
   - Read
   - Grep

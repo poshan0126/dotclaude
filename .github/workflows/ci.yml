@@ -46,6 +46,17 @@ jobs:
             echo "::error::Always-loaded content (~${total} tok) exceeds the 1200-token budget. Trim CLAUDE.template.md or move rule content into a path-scoped rule."
             exit 1
           fi
+      - name: Reviewer agents share the house contract
+        run: |
+          # Reviewer boilerplate is intentionally duplicated (agents run isolated and
+          # can't see shared rules), so guard the invariants against drift instead.
+          for a in agents/code-reviewer.md agents/security-reviewer.md agents/performance-reviewer.md agents/doc-reviewer.md agents/silent-failure-hunter.md agents/pr-test-analyzer.md; do
+            grep -q '80' "$a" || { echo "::error::$a lost the 80% confidence threshold"; exit 1; }
+            grep -q '^## Operating principles' "$a" || { echo "::error::$a missing Operating principles section"; exit 1; }
+            grep -q '^## Output format' "$a" || { echo "::error::$a missing Output format section"; exit 1; }
+            grep -q '^## What NOT to flag' "$a" || { echo "::error::$a missing What NOT to flag section"; exit 1; }
+          done
+          echo "All 6 reviewer agents carry the house contract."
 
   validate-plugins:
     runs-on: ubuntu-latest

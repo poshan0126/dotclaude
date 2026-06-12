@@ -49,7 +49,7 @@ Use AskUserQuestion (batch up to 4 questions per call; use `multiSelect` where c
   - **Standard** (recommended): Minimal + every component the evidence justifies (see Phase 3 mapping) — and nothing else.
   - **Full kit**: everything dotclaude ships, trimmed only where clearly inapplicable.
   - **Let me pick**: walk through each component group.
-- "Which workflow skills do you want?" (multiSelect). Offer only the justified ones: `ship`/`pr-review` need a git/PR workflow, `tdd`/`test-writer` need a working test runner, `debug-fix`/`explain`/`refactor`/`context-budget` are universal. Preselect per evidence; let the user drop any.
+- "Which workflow skills do you want?" (multiSelect). Offer only the justified ones: `ship`/`pr-review` need a git/PR workflow, `fix-issue` needs a GitHub remote with `gh`, `tdd`/`test-writer` need a working test runner, `catchup`/`claude-md`/`debug-fix`/`explain`/`refactor`/`context-budget` are universal. Preselect per evidence; let the user drop any.
 - "Optional hooks?" (multiSelect):
   - `format-on-save` — only offer if a formatter was detected.
   - `auto-test` — warn plainly: runs the matching test file after **every** edit; only sensible with a fast suite.
@@ -70,7 +70,8 @@ Hard mapping rules (no exceptions without the user overriding):
 | `rules/security.md`, `rules/error-handling.md` | Backend/API surfaces exist (1.6), `paths:` rewritten to the real dirs (with monorepo prefixes) |
 | `rules/testing.md` | A test suite actually exists |
 | `agents/doc-reviewer.md` | Docs exist (1.7) |
-| `agents/code-reviewer.md`, `agents/security-reviewer.md`, `agents/performance-reviewer.md` | Standard size and up |
+| `agents/code-reviewer.md`, `agents/silent-failure-hunter.md`, `agents/security-reviewer.md`, `agents/performance-reviewer.md` | Standard size and up |
+| `agents/pr-test-analyzer.md` | A test suite actually exists (1.4), Standard size and up |
 | `hooks/format-on-save.sh` | Formatter detected AND selected |
 | `hooks/auto-test.sh` | Test runner detected AND explicitly selected |
 | `hooks/notify.sh`, `hooks/session-start.sh` | Selected in Round 2 |

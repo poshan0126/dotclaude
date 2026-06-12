@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Reviews code changes for security vulnerabilities. Use for PR review, pre-deploy verification, or audit of recently changed files.
+description: Use after changes to auth, input handling, queries, file paths, tokens, or crypto — and before deploying any of those. OWASP-style static analysis: injection, authz flaws, data exposure, weak crypto. Severity-ranked with attack vector and fix.
 tools:
   - Read
   - Grep

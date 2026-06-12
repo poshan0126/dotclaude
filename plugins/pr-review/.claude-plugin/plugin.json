@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "pr-review",
-  "version": "2.0.0",
-  "description": "Review PR or staged changes via specialist agents. Synthesizes a unified severity-ranked report.",
+  "version": "2.1.0",
+  "description": "Review PR or staged changes via six specialist agents in parallel. Confidence-bucketed, severity-ranked synthesis.",
   "author": {
     "name": "poshan0126"
   },
