@@ -37,7 +37,7 @@ Full plugin list: `code-reviewer`, `security-reviewer`, `performance-reviewer`, 
 
 The `safety-hooks` plugin packages the four PreToolUse guards (dangerous commands, secret scanning, protected files, build artifacts) so you get deterministic guardrails without copying any files.
 
-Plugins are not semver-versioned: every commit to `main` is an update (`/plugin update`), the same model Anthropic's own [skills marketplace](https://github.com/anthropics/skills) uses.
+Plugins are semver-versioned (see each `plugins/<name>/.claude-plugin/plugin.json`); `/plugin update` picks up new releases.
 
 ### Option 2: clone the repo
 
@@ -173,7 +173,9 @@ dotclaude/
 ├── settings.local.json.example         # Personal settings template, copy to .claude/settings.local.json
 ├── .gitignore                          # Gitignore for the dotclaude repo (not for your project's .claude/)
 ├── .claude-plugin/                     # Marketplace catalog (only used by the plugin install path)
-│   └── marketplace.json                #   15 plugin entries publishing the top-level dirs directly (source "./")
+│   └── marketplace.json                #   15 plugin entries pointing at ./plugins/<name>
+├── plugins/                            # One dir per plugin: plugin.json + symlinks into the top-level dirs
+│   └── <15 plugins>/                   #   No copies — symlinks dereference to real files at install time
 ├── rules/                              # Modular instructions, copy to .claude/rules/
 │   ├── code-quality.md                 #   Principles, naming, comments, markers, file organization (always loaded)
 │   ├── testing.md                      #   Testing conventions (always loaded)
@@ -206,7 +208,6 @@ dotclaude/
 │   ├── auto-test.sh                    #   Run the matching test file after edits. Silent on success.
 │   ├── session-start.sh                #   Inject branch + dirty state at session start (verbose mode opt-in).
 │   ├── notify.sh                       #   Native OS notification when Claude needs attention (macOS/Linux/WSL).
-│   ├── hooks.json                      #   Manifest for the safety-hooks plugin (not used in .claude/).
 │   └── tests/                          #   Fixture-based test suite: bash hooks/tests/run-all.sh
 └── .github/workflows/ci.yml            # CI: hook fixtures (Linux+macOS) + claude plugin validate --strict
 ```

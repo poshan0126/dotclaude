@@ -78,11 +78,13 @@ Every line in a rule costs tokens every session. Every line in a skill costs tok
 
 ### Plugin marketplace consistency
 
-The top-level `agents/`, `skills/`, `rules/`, and `hooks/` directories are the single source of truth — marketplace entries publish them directly (`source: "./"` + `strict: false` component arrays), so there is nothing to mirror or sync.
+The top-level `agents/`, `skills/`, `rules/`, and `hooks/` directories are the single source of truth. Each `plugins/<name>/` dir contains only a `.claude-plugin/plugin.json` plus **relative symlinks** into the top-level dirs — Claude Code dereferences them at install time, so there are no copies to keep in sync. Never place real component files inside `plugins/`, and never use `"./"` as a plugin source (the repo root as plugin root makes default discovery load everything into every plugin).
 
 If you add or rename a skill or agent:
 
-- Add or update its entry in `.claude-plugin/marketplace.json` (include `description`, `category`, and `keywords`; do NOT add a `version` — updates are git-SHA-based).
+- Add or update its entry in `.claude-plugin/marketplace.json` (include `description`, `category`, and `keywords`; do NOT add a `version` there — versions live only in `plugin.json`).
+- Bump the `version` in `plugins/<name>/.claude-plugin/plugin.json` whenever the plugin's components change.
+- Create `plugins/<name>/` with a matching `plugin.json` and a symlink: `ln -s ../../../agents/<name>.md plugins/<name>/agents/<name>.md` (or `ln -s ../../../skills/<name> plugins/<name>/skills/<name>`).
 - Run `claude plugin validate . --strict` and make sure it passes. CI runs the same check on every PR.
 
 ### Hooks require tests

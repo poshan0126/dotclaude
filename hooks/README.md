@@ -4,7 +4,7 @@ Hook scripts are deterministic enforcement. Unlike rules (advisory), hooks **gua
 
 Hooks are wired in `settings.json` under the `"hooks"` key. Each hook specifies an event, a matcher, and a command to run. `timeout` values are in **seconds**.
 
-`hooks.json` in this directory is not loaded from `.claude/` — it's the manifest for the `safety-hooks` plugin, which packages the four PreToolUse guards below for one-command install via `/plugin install safety-hooks@dotclaude`. `tests/` holds the fixture suite (`bash hooks/tests/run-all.sh`); neither belongs in a project's `.claude/hooks/`.
+The four PreToolUse guards below are also packaged as the `safety-hooks` plugin (`/plugin install safety-hooks@dotclaude`) via `plugins/safety-hooks/hooks/hooks.json`, so you can get them without copying any files. `tests/` holds the fixture suite (`bash hooks/tests/run-all.sh`); it doesn't belong in a project's `.claude/hooks/`.
 
 ## Available hooks
 

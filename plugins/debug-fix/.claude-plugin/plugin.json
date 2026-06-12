@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "debug-fix",
+  "version": "2.0.0",
+  "description": "Find and fix a bug. Default is the careful path (reproduce, investigate, test). Add `--fast` for emergency hotfix mode.",
+  "author": {
+    "name": "poshan0126"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "debugging",
+    "hotfix",
+    "regression-test"
+  ]
+}

@@ -1,0 +1,1 @@
+../../../hooks/block-dangerous-commands.sh

@@ -32,5 +32,11 @@ jobs:
           node-version: 22
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
-      - name: Validate marketplace and plugin manifests (strict)
+      - name: Validate marketplace manifest (strict)
         run: claude plugin validate . --strict
+      - name: Validate each plugin (strict)
+        run: |
+          for d in plugins/*/; do
+            echo "== $d"
+            claude plugin validate "$d" --strict
+          done

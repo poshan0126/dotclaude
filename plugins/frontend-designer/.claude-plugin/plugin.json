@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "frontend-designer",
+  "version": "2.0.0",
+  "description": "Builds production-grade UI. Tokens-first, anti-AI-slop aesthetics, design tokens enforced.",
+  "author": {
+    "name": "poshan0126"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/poshan0126/dotclaude",
+  "repository": "https://github.com/poshan0126/dotclaude",
+  "keywords": [
+    "frontend",
+    "ui",
+    "design-tokens",
+    "accessibility"
+  ]
+}

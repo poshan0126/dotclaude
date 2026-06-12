@@ -83,21 +83,21 @@ Ask one final AskUserQuestion: approve the plan / adjust (loop back) / cancel. D
 
 ## Phase 4: Apply the plan
 
-**Fresh mode (plugin install).** Copy each approved file individually from `$CLAUDE_PLUGIN_ROOT` (the full dotclaude repo). Copying per-file keeps folder READMEs, `hooks/hooks.json`, and `hooks/tests/` out automatically. Example shape:
+**Fresh mode (plugin install).** Copy each approved file individually from `$CLAUDE_PLUGIN_ROOT/template/` (the plugin bundles the full dotclaude template there). Copying per-file keeps folder READMEs and `hooks/tests/` out automatically. Example shape:
 
 ```bash
 mkdir -p .claude/rules .claude/hooks .claude/agents .claude/skills
-cp "$CLAUDE_PLUGIN_ROOT/rules/code-quality.md" .claude/rules/
-cp "$CLAUDE_PLUGIN_ROOT/hooks/protect-files.sh" .claude/hooks/   # ...one cp per approved file
-cp -r "$CLAUDE_PLUGIN_ROOT/skills/debug-fix" .claude/skills/     # skills copy as directories
+cp "$CLAUDE_PLUGIN_ROOT/template/rules/code-quality.md" .claude/rules/
+cp "$CLAUDE_PLUGIN_ROOT/template/hooks/protect-files.sh" .claude/hooks/   # ...one cp per approved file
+cp -r "$CLAUDE_PLUGIN_ROOT/template/skills/debug-fix" .claude/skills/     # skills copy as directories
 chmod +x .claude/hooks/*.sh
 ```
 
 Project-root files (never clobber):
 
 ```bash
-[ -f ./CLAUDE.md ]               || cp "$CLAUDE_PLUGIN_ROOT/CLAUDE.template.md" ./CLAUDE.md
-[ -f ./CLAUDE.local.md.example ] || cp "$CLAUDE_PLUGIN_ROOT/CLAUDE.local.md.example" ./
+[ -f ./CLAUDE.md ]               || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.md" ./CLAUDE.md
+[ -f ./CLAUDE.local.md.example ] || cp "$CLAUDE_PLUGIN_ROOT/template/CLAUDE.local.md.example" ./
 touch .gitignore
 grep -qxF 'CLAUDE.local.md' .gitignore || echo 'CLAUDE.local.md' >> .gitignore
 ```
@@ -106,7 +106,7 @@ If `$CLAUDE_PLUGIN_ROOT` is unset and there are no copied files to work with, te
 
 **Existing/clone mode.** The user already has files. Apply the same plan as a diff:
 - Add approved components that are missing.
-- Propose **removing** files the plan doesn't justify (the whole-kit clone brings everything): unjustified rules/agents/skills/hooks, plus repo artifacts (`.claude/README.md`, `CONTRIBUTING.md`, `LICENSE`, `.gitignore`, `CLAUDE.template.md`, `settings.local.json.example`, folder READMEs, `.claude-plugin/`, `hooks/hooks.json`, `hooks/tests/`, legacy `plugins/`/`scripts/`). Confirm before each `rm`; list, don't surprise.
+- Propose **removing** files the plan doesn't justify (the whole-kit clone brings everything): unjustified rules/agents/skills/hooks, plus repo artifacts (`.claude/README.md`, `CONTRIBUTING.md`, `LICENSE`, `.gitignore`, `CLAUDE.template.md`, `settings.local.json.example`, folder READMEs, `.claude-plugin/`, `hooks/tests/`, `plugins/`, legacy `scripts/`). Confirm before each `rm`; list, don't surprise.
 - Where a kept file differs from the shipped version, assume the user customized it: show the proposed change before applying.
 
 **Customize while installing** (confirm each file's changes before writing):
