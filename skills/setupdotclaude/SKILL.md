@@ -1,6 +1,6 @@
 ---
 name: setupdotclaude
-description: Set up dotclaude in any project. Deep-scans the codebase, interviews the user, then installs and customizes only the components the project actually needs. Nothing is copied without evidence and approval.
+description: Set up dotclaude in any project. Deep-scans the codebase, interviews the user, installs only justified components, customized to the stack.
 argument-hint: "[optional: focus area like 'frontend' or 'backend']"
 disable-model-invocation: true
 ---
@@ -128,12 +128,19 @@ If `$CLAUDE_PLUGIN_ROOT` is unset and there are no copied files to work with, te
 5. **block-dangerous-commands.sh**: update the protected-branch regex if the default branch isn't `main`/`master`.
 6. **Migrate existing AI config** (1.11): offer to fold `.cursorrules` / `AGENTS.md` / copilot-instructions content into `CLAUDE.md` or a rule. Never delete the originals without asking.
 
-## Phase 5: Verify and report
+## Phase 5: Verify, fingerprint, and report
 
 1. **CLAUDE.md budget**: count non-blank lines (`grep -cv '^[[:space:]]*$' CLAUDE.md`). Under 25 = PASS. 25-50 = WARN: list the longest sections, ask which to trim. Over 50 = FAIL: propose specific cuts and don't finish until ≤50.
 2. **Always-loaded estimate**: `CLAUDE.md` + rules without `paths:`, chars/4. Report the number; over ~1000 tokens, propose the single biggest trim.
 3. **Mechanical checks**: every hook wired in `settings.json` exists and is executable; every installed file parses (YAML frontmatter, JSON); nothing was installed beyond the approved plan; no rule duplicates what a hook already enforces.
-4. **Summary**: three lists — installed (with the evidence that justified each), skipped (with reason), customized (what changed). Budget verdict. Tip: run `/context-budget` for the full per-turn breakdown.
+4. **Write the drift fingerprint** so the setup stays tuned over time. If `session-start.sh` was installed:
+
+   ```bash
+   [ -x .claude/hooks/session-start.sh ] && DOTCLAUDE_FINGERPRINT=1 .claude/hooks/session-start.sh > .claude/.dotclaude.json
+   ```
+
+   This records a hash of the project's manifests. From then on, the session-start hook emits a one-line "config drift" nudge whenever the manifests change (new scripts, new framework, new package manager) — the signal to re-run this skill. Commit `.claude/.dotclaude.json` so the whole team shares the baseline. If `session-start.sh` was not installed, skip and instead tell the user to re-run `/setupdotclaude` manually after stack changes.
+5. **Summary**: three lists — installed (with the evidence that justified each), skipped (with reason), customized (what changed). Budget verdict. Close with the maintenance cadence: "Re-run `/setupdotclaude` when the drift nudge appears, after adding a framework or test runner, or after a big restructuring — it runs as a gap analysis on an existing setup, so re-runs are cheap and only propose deltas." Tip: run `/context-budget` for the full per-turn breakdown.
 
 ## Rules
 

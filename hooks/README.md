@@ -69,6 +69,8 @@ Injects dynamic project context at session start.
 
 The verbose payload runs ~30 to 90 tokens per session. Default is recommended for daily iterative work where every new conversation pays this cost.
 
+**Drift nudge**: if `.claude/.dotclaude.json` exists (written by `/setupdotclaude` at the end of setup), the hook hashes the project's manifests (`package.json` scripts, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Gemfile`, `composer.json`, `Makefile`) and appends a one-line re-tune nudge only when the hash no longer matches. `DOTCLAUDE_FINGERPRINT=1 session-start.sh` prints the fingerprint JSON (how the skill writes the file); `DOTCLAUDE_META` overrides the fingerprint path (used by tests).
+
 ### auto-test.sh
 **Event**: PostToolUse (`Edit` | `Write`)
 

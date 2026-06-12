@@ -1,6 +1,6 @@
 ---
 name: context-budget
-description: Estimate per-turn token cost of this project's `.claude/` configuration and `CLAUDE.md`. Reports always-loaded vs path-scoped vs invoked-only, ranks the top contributors, and flags entries over budget. Add `--api` for exact counts via Anthropic's count_tokens endpoint instead of the chars/4 heuristic.
+description: Estimate per-turn token cost of `.claude/` and `CLAUDE.md` — always-loaded vs path-scoped vs invoked-only, top contributors, over-budget flags. Add `--api` for exact tokenizer counts.
 argument-hint: "[--api]"
 disable-model-invocation: true
 ---

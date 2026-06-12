@@ -67,7 +67,9 @@ This is a template. Keep it framework-agnostic.
 
 ### Token consciousness
 
-Every line in a rule costs tokens every session. Every line in a skill costs tokens when invoked. Before adding content, ask: would removing this cause Claude to make mistakes? If no, don't add it.
+Every line in a rule costs tokens every session. Every line in a skill costs tokens when invoked, and every skill's frontmatter `description` costs tokens in the per-session skill listing — keep descriptions under ~200 characters. Before adding content, ask: would removing this cause Claude to make mistakes? If no, don't add it.
+
+CI enforces this: the `token-budget` job fails any PR that pushes always-loaded content (`CLAUDE.template.md` + rules without `paths:`) past ~1200 estimated tokens.
 
 ### Hook scripts must be safe
 

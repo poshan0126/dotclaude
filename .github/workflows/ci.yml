@@ -23,6 +23,30 @@ jobs:
       - name: Run hook fixtures
         run: bash hooks/tests/run-all.sh
 
+  token-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Always-loaded content under 1200-token budget (chars/4)
+        run: |
+          total=0
+          files="CLAUDE.template.md"
+          for f in rules/*.md; do
+            [ "$(basename "$f")" = "README.md" ] && continue
+            grep -q '^paths:' "$f" || files="$files $f"
+          done
+          for f in $files; do
+            chars=$(wc -c < "$f")
+            tok=$((chars / 4))
+            echo "  $f: ~${tok} tokens"
+            total=$((total + tok))
+          done
+          echo "Always-loaded estimate: ~${total} tokens (budget: 1200)"
+          if [ "$total" -gt 1200 ]; then
+            echo "::error::Always-loaded content (~${total} tok) exceeds the 1200-token budget. Trim CLAUDE.template.md or move rule content into a path-scoped rule."
+            exit 1
+          fi
+
   validate-plugins:
     runs-on: ubuntu-latest
     steps:

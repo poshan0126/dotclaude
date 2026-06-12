@@ -1,0 +1,7 @@
+{
+  "name": "matching fingerprint stays silent (hash = empty-manifest cksum of this repo)",
+  "stdin": {},
+  "env": { "DOTCLAUDE_META": "hooks/tests/fixtures/session-start/data/meta-match.json" },
+  "expect_exit": 0,
+  "expect_stdout_not_contains": ["config drift"]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "fingerprint mode prints manifest hash JSON",
+  "stdin": {},
+  "env": { "DOTCLAUDE_FINGERPRINT": "1" },
+  "expect_exit": 0,
+  "expect_stdout_contains": ["manifest_hash", "setup_date"]
+}

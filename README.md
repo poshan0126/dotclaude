@@ -86,6 +86,18 @@ Reload Claude Code, then run `/setupdotclaude`. It's the same skill as Option 1,
 
 The defaults are foundations. Your edits on top are what make Claude effective for *your* project.
 
+## Keep it tuned
+
+dotclaude is built for daily iteration, so the setup is a loop, not a one-shot. When `/setupdotclaude` finishes it saves a fingerprint of your project's manifests to `.claude/.dotclaude.json` (commit it — the team shares the baseline). From then on the `session-start` hook compares fingerprints each session and emits a single line — `config drift: project manifests changed since setup` — only when your stack actually changed. Zero tokens otherwise.
+
+When to re-run `/setupdotclaude`:
+
+- The drift nudge appears (new scripts, framework, package manager, or build tool detected).
+- You added a major area the rules should cover (first migrations, first frontend code, a new package in the monorepo).
+- After a big restructuring that moved source or test directories (path-scoped rule globs go stale).
+
+Re-runs are cheap: on an existing `.claude/` the skill runs as a gap analysis and only proposes deltas — it never re-installs the world.
+
 ## Skills (slash commands)
 
 Skills are invoked with `/name` in your Claude Code session. All except `/test-writer` are manual only.
